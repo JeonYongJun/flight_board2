@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <% include ./head.ejs %>
+    </head>
+    <body>
+    <div class="container">
+        <% include ./menu.ejs %>
+        <h1>EastarJet Flight Plotting Board System!</h1>
+        <img src="/images/flight_board_main.PNG" width="60">
+        <hr>
+        <h2>기본 기능</h2>
+        <ul>
+            <li><p>1 : 그룹웨어 ID와 Password로 접속</p></li>
+            <li><p>2 : 검색을 원하는 날짜와 공항을 지정후 plan 버튼 클릭</p></li>
+            <li><p>3 : 계획 스케줄을 기준으로 정보를 표출하며 운영된 스케줄을 같이 표출하려면 schedule 버튼을 클릭</p></li>
+            <li><p>4 : 게이트 정보를 표출하려면 gage 버튼을 클릭</p></li>
+            <li><p>게이트 정보 : 각 공항의 예정(확정)된 게이트 정보를 배치 작업으로 공사의 홈페이지 정보를 읽어옮.</p></li>
+
+        </ul>
+        <h2>추가 기능</h2>
+        <ul>
+            <ui><p>1: 정비사 배정 - Departure, Arrival, Board, 각 2명씩 배정 가능, Note 추가 기능</p></ui>
+            <ui><p>2: 기재에 메시지 추가 기능</p></ui>
+            <ui><p>3: LOV Check 표시 기능</p></ui>
+            <ui><p>4: 배정된 정비사의 인적사항 툴팁 제공</ui>
+        </ul>
+        <hr>
+        <h2>sample image</h2><h2>current</h2>
+        <img src="/images/current_board.PNG" width="600">
+        <img src="/images/flight_board.PNG" width="800">
+        <hr>
+        <h3>기술 정보</h3>
+        <p>
+            Server Side : Node.js(express)<br>
+            Client Side : D3js(SVG)<br>
+            Crawlling : Python(requests, beautifulsoup)<br>
+            Link to Groupware : axios<br>
+            System Admin : 오영진(puniculla@eastarjet.com,8093)
+
+        </p>
+    </div>
+    </body>
+    <% include ./tail.ejs %>
+</html>

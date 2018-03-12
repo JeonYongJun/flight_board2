@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+	<title>비행 정보 현황판</title>
+	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/javascripts/board_lib.js"></script>
+	<script type="text/javascript" src="/static/javascripts/board_plot.js"></script>
+	<link href="/static/stylesheets/board.css" rel="stylesheet" type="text/css"></link>
+	<script>
+		function init_flight_info(){
+			d3.select('#flight_info').append('p').attr('id','information');
+      d3.select('#flight_info').append('p').attr('id','add_work');
+      d3.select('#add_work').html(`정비사 추가 => 정비사 1:
+      <input type="text" name="worker1" id="job_worker1" placeholder="받을 정비사"> ~ 정비사 2:
+      <input type="text" name="worker2" id="job_worker2" placeholder="보낼 정비사">
+      <button id="info_close">닫기</button>
+      <button id="worker_add">추가</button>`);
+
+			// Flight detail info window
+      d3.select('#info_close').on('click',function(){
+        d3.select("#flight_info").attr("class","info_hidden");
+      });
+			// process for adding workers
+      d3.select('#worker_add').on('click',function(){
+        var worker1 = d3.select('#job_worker1').property('value');
+        d3.select('#job_worker1').property('value','');
+				var box_g = d3.select(selected_box.node().parentNode);
+        if(worker1 != ''){
+          //draw_text(box_g,-10,-10,worker1)
+          //.attr("font-size","14").attr("font-weight","10");
+					box_g.select('#worker1').text(worker1);
+        }
+        var worker2 = d3.select('#job_worker2').property('value');
+        d3.select('#job_worker2').property('value','');
+        if(worker2 != ''){
+          //draw_text(box_g,selected_box.attr("width")-30,-10,worker2)
+          //.attr("font-size","14").attr("font-weight","10");
+					box_g.select('#worker2').text(worker2);
+        }
+        d3.select("#flight_info").attr("class","info_hidden");
+      });
+		}
+
+		function init_controls(){
+			// initialize control
+      var station_list = ['ALL','GMP','ICN','CJU','CJJ','KUV','PUS']
+      for(station in station_list){
+      	d3.select('#station').append('option')
+          .attr('value',station_list[station]).text(station_list[station]);
+      }
+      var today = yyyymmdd(new Date());
+      d3.select('#log_date').property('value',today);
+      d3.select('#station').property('value','GMP');
+
+			// event for show_list button
+			d3.select('#show_list').property('disabled',false);
+			d3.select('#show_list').on('click',()=>{
+				d3.select('#show_list').property('disabled',true);
+				var sel_date = d3.select('#log_date').property('value');
+				var sel_station = d3.select('#station').property('value');
+				var json_url = '/flight_board/plan/'+sel_date+'/'+sel_station;
+				d3.json(json_url,(err,data)=>{
+					//console.log(data);
+					if(err){
+						console.log(err);
+						//console.log(data);
+						alert('Server Internal Error, please email to system administrator!')
+					}else{
+						//console.log(data.plan);
+						draw_plot(sel_date,sel_station,data.plan.recordset);
+					}
+				});
+				d3.select('#show_list').property('disabled',false);
+			});
+			// 스케줄 데이터 업데이트
+			d3.select('#update_list').property('disabled',false);
+			d3.select('#update_list').on('click',()=>{
+				d3.select('#update_list').property('disabled',true);
+				var sel_date = d3.select('#log_date').property('value');
+				var sel_station = d3.select('#station').property('value');
+				var json_url = '/flight_board/schedule/'+sel_date+'/'+sel_station;
+				d3.json(json_url,(err,data)=>{
+					//console.log(data);
+					if(err){
+						console.log(err);
+						//console.log(data);
+						alert('Server Internal Error, please email to system administrator!')
+					}else{
+						//update
+						if(data.result == 1){
+							data.schedule.recordset.forEach((e)=>{
+								//console.log('#'+e.ACNumber+'_'+e.FlightNumber,e.RampOut.slice(11,16));
+								// RampOut
+								d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
+									.select('#sch_start_time').text(e.RampOut.slice(11,16));
+								d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
+									.select('#sch_end_time').text(e.RampIn.slice(11,16));
+								// 위치 조정
+								//console.log(e.RampOut,rtime_to_postion(e.RampOut));
+								//console.log(e.ACNumber,acnumber_to_postion(e.ACNumber))
+								d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
+									.transition()
+									.attr("transform","translate("+rtime_to_postion(e.RampOut)+","+(acnumber_to_postion(e.ACNumber)-box_h)+")");
+							});
+						}
+					}
+				});
+				d3.select('#update_list').property('disabled',false);
+			});
+
+			// 게이트 데이터 업데이트
+			d3.select('#gate_list').property('disabled',false);
+			d3.select('#gate_list').on('click',()=>{
+				d3.select('#gate_list').property('disabled',true);
+				var sel_date = d3.select('#log_date').property('value');
+				var sel_station = d3.select('#station').property('value');
+				var csv_url = '/data/'+sel_station+'_'+sel_date+'.csv';
+				console.log(csv_url)
+				d3.csv(csv_url,(err,data)=>{
+					data.forEach((d)=>{
+						//해당 객체 찾기 - 출발 GateFrom_flt#, 도착 GateTo_flt#
+						//게이트 번호 붙이기
+						//console.log(d);
+						if(d.flt != ""){
+							if(d.type == 'D') d3.select('#GateFrom_'+d.flt).text(d.gate+'-');
+							else d3.select('#GateTo_'+d.flt).text('-'+d.gate);
+						}
+					});
+				});
+				d3.select('#gate_list').property('disabled',false);
+			});
+		}
+
+    $('document').ready(()=>{
+      console.log('ready');
+			init_flight_info();
+			init_controls();
+		});
+  </script>
+</head>
+<body>
+<div id="top">
+	<div id="controls" style="float:left">
+		<p><H2>Flight Plotting Board</H2></p>
+		<p>Select date and station then push 'show list' button :
+			<input type="date" id="log_date" name="log_date">
+			<select id="station" name="station"></select>
+			<button id="show_list" disabled=true>show list</button>
+			<button id="update_list" disabled=true>update</button>
+			<button id="gate_list" disabled=true>gate</button>
+		</p>
+	</div>
+	<div id="menu" style="float:right">
+		<nav>
+			<ul>
+				<li><a href="/">main</a></li>
+				<li><a href="/help">help</a></li>
+			</ul>
+		</nav>
+	</div>
+</div>
+<div id="flight_board">
+<svg></svg>
+</div>
+<div id="flight_info" class="info_hidden"></div>
+<div id="tooltip_div" class="tooltip" style="opacity: 0;"></div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+  <% include ./head.ejs %>
+  </head>
+  <body>
+    <% include ./menu.ejs %>
+    <div class="container">
+
+      <div class="starter-template">
+        <h2><%= title %></h2>
+      </div>
+      <form class="form-signin" action="/login" method="post">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="userid" class="sr-only">Groupware User Id</label>
+        <input type="text" name="userid" id="userid" class="form-control" placeholder="Groupware User Id" required="" autofocus="">
+        <label for="password" class="sr-only">Groupware Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Groupware Password" required="">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+    </div><!-- /.container -->
+  </body>
+  <% include ./tail.ejs %>
+</html>

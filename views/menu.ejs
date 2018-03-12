@@ -11,9 +11,9 @@
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="/">Home</a></li>
-          <li><a href="/board">Board</a></li>
-          <li><a href="/help">Help</a></li>
+          <li <%= tab_index=='1'?'class=active':'' %>><a href="/">Home</a></li>
+          <li <%= tab_index=='2'?'class=active':'' %>><a href="/board">Board</a></li>
+          <li <%= tab_index=='3'?'class=active':'' %>><a href="/help">Help</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

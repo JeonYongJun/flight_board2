@@ -1,3 +1,10 @@
+#!/usr/bin/python
+
+import os
+import sys
+import getopt
+import logging
+import logging.handlers
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
@@ -86,3 +93,83 @@ def icn_sch_list(dir_name='public/data/'):
     df = pd.DataFrame(icn_list,columns=['type','flt','from','to','tm','gate'])
     df.to_csv(dir_name+'ICN_'+datetime.today().strftime('%Y-%m-%d')+'.csv')
     return df
+
+if __name__ == "__main__":
+    station = ''
+    verbos = '0'
+    STATION_CODE = ['ICN','GMP','CJU','CJJ','PUS','KUV']
+    if(len(sys.argv) < 2):
+        print('argument error :: ReadAirlineInformation.py -s <station>')
+        sys.exit(2)
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],"hv:s:",["station="])
+    except getopt.GetoptError:
+        print('option error :: ReadAirlineInformation.py -s <station> -v <verbos>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('usage :: ReadAirlineInformation.py -s <station> -v <verbos>')
+            print('station :: {}'.format(','.join(STATION_CODE)))
+            print('verbos :: 0 - develop, 1 - production')
+            sys.exit()
+        elif opt == '-v':
+            verbos = arg
+        elif opt in ("-s", "--station"):
+            station = arg.upper()
+
+    print('verbos option :: {}'.format(verbos))
+    print('station option :: {}'.format(station))
+    if(station not in STATION_CODE):
+        print('check usage :: ReadAirlineInformation.py -s <station>')
+        print('station list :: {}'.format(','.join(STATION_CODE)))
+        sys.exit()
+
+    # lobber
+    logger = logging.getLogger('mylogger')
+    # fomatter
+    fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
+    filename = './logs/python.log'
+    # lober level
+    if(verbos == '0'):
+        loggerLevel = logging.DEBUG
+    else:
+        loggerLevel = logging.INFO
+    logger.setLevel(loggerLevel)
+    # handler
+    fileMaxByte = 1024 * 1024 * 50 #50, split file
+    fileHandler = logging.handlers.RotatingFileHandler(filename, maxBytes=fileMaxByte, backupCount=10)
+    # fileHandler = logging.FileHandler(filename)
+    streamHandler = logging.StreamHandler()
+    # bind formatter
+    fileHandler.setFormatter(fomatter)
+    streamHandler.setFormatter(fomatter)
+    # bind handler
+    logger.addHandler(fileHandler)
+    logger.addHandler(streamHandler)
+
+    ## crawling job(main job)
+    logger.debug('start program')
+    try:
+        if(station == 'ICN'):
+            logger.info('start reading {} information'.format(station))
+            icn_sch_list()
+            logger.info('end reading {} information'.format(station))
+        else:
+            logger.info('start reading {} information'.format(station))
+            kac_sch_list(station)            
+            logger.info('end reading {} information'.format(station))
+    except Exception as e:
+        logger.error('Exception occured!')
+        logger.critical(e)
+    logger.debug('end program')
+    # lobber
+    # logger = logging.getLogger('mylogger')
+    # fomatter
+    # fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
+    # enviroment
+    
+    # if(station == 'ICN'):
+    #    print('')
+    #    icn_sch_list()
+    # else: kac_sch_list(station)

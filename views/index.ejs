@@ -12,6 +12,13 @@
       </div>
       <form class="form-signin" action="/login" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
+        <% if(message!=''){ %>
+          <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <%= message %>
+          </div>
+        <% } %>
         <label for="userid" class="sr-only">Groupware User Id</label>
         <input type="text" name="userid" id="userid" class="form-control" placeholder="Groupware User Id" required="" autofocus="">
         <label for="password" class="sr-only">Groupware Password</label>

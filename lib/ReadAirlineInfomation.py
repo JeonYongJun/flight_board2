@@ -8,7 +8,8 @@ import logging.handlers
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+import time
 
 head = {
    'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
@@ -24,7 +25,7 @@ def select_icn_list(url,params,tp):
     res = requests.post(url,headers=head,params=params)
     soup = bs(res.text,'lxml')
     td_list = []
-    for tr in soup.select('div.flight-info-basic')[1:]:
+    for tr in soup.select('div.flight-info-basic-link')[1:]:
         td_line = [tp]#type
         #print(tr.select('.flight-info-basic-flight-number')[0].text.strip())
         # flight number
@@ -49,6 +50,12 @@ def select_icn_list(url,params,tp):
         td_list.append(td_line)
     return td_list
 
+ # server utc time 사용 => 로컬 time
+def utc_to_localtime(frm='%Y%m%d'):
+    # datetime.today().strftime('%Y%m%d')
+    return datetime.fromtimestamp(time.time(),timezone(timedelta(hours=9))).strftime(frm)
+
+
 def kac_sch_list(port='GMP',dir_name='public/data/'):
     ## 한국공항공사 데이터
     params = {
@@ -69,11 +76,12 @@ def kac_sch_list(port='GMP',dir_name='public/data/'):
     url = 'https://www.airport.co.kr/gimpo/extra/liveSchedule/liveScheduleList/layOut.do?langType=1&inoutType=IN&cid=2015102611052578964&menuId=10'
     kac_list.extend([['A',d[0][2:],d[1],d[2],d[5],d[6]] for d in select_gmp_list(url,params,'table-responsive')])
     df = pd.DataFrame(kac_list,columns=['type','flt','from','to','tm','gate'])
-    df.to_csv(dir_name+port+'_'+datetime.today().strftime('%Y-%m-%d')+'.csv')
+    df.to_csv(dir_name+port+'_'+utc_to_localtime('%Y-%m-%d')+'.csv')
     return df
 
+
 def icn_sch_list(dir_name='public/data/'):
-    today = datetime.today().strftime('%Y%m%d')
+    today = utc_to_localtime()
     ## 인천공항공사 데이터
     params = {
         'A':'A',
@@ -91,7 +99,7 @@ def icn_sch_list(dir_name='public/data/'):
     icn_list.extend([d[0:6]
                      for d in select_icn_list(url,params,'A')])
     df = pd.DataFrame(icn_list,columns=['type','flt','from','to','tm','gate'])
-    df.to_csv(dir_name+'ICN_'+datetime.today().strftime('%Y-%m-%d')+'.csv')
+    df.to_csv(dir_name+'ICN_'+utc_to_localtime('%Y-%m-%d')+'.csv')
     return df
 
 if __name__ == "__main__":

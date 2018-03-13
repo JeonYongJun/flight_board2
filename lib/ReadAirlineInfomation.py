@@ -76,7 +76,7 @@ def kac_sch_list(port='GMP',dir_name='public/data/'):
     url = 'https://www.airport.co.kr/gimpo/extra/liveSchedule/liveScheduleList/layOut.do?langType=1&inoutType=IN&cid=2015102611052578964&menuId=10'
     kac_list.extend([['A',d[0][2:],d[1],d[2],d[5],d[6]] for d in select_gmp_list(url,params,'table-responsive')])
     df = pd.DataFrame(kac_list,columns=['type','flt','from','to','tm','gate'])
-    df.to_csv(dir_name+port+'_'+utc_to_localtime('%Y-%m-%d')+'.csv')
+    df.to_csv(os.path.join(dir_name,port+'_'+utc_to_localtime('%Y-%m-%d')+'.csv'))
     return df
 
 
@@ -99,46 +99,65 @@ def icn_sch_list(dir_name='public/data/'):
     icn_list.extend([d[0:6]
                      for d in select_icn_list(url,params,'A')])
     df = pd.DataFrame(icn_list,columns=['type','flt','from','to','tm','gate'])
-    df.to_csv(dir_name+'ICN_'+utc_to_localtime('%Y-%m-%d')+'.csv')
+    df.to_csv(os.path.join(dir_name,'ICN_'+utc_to_localtime('%Y-%m-%d')+'.csv'))
     return df
 
-if __name__ == "__main__":
-    station = ''
+STATION_CODE = ['ICN','GMP','CJU','CJJ','PUS','KUV']
+def help():
+    print('[usage]')
+    print('ReadAirlineInformation.py [options]')
+    print('help option : -h[--help] ')
+    print('options : -s <station> -o <out_dir> -l <log_dir>')
+    print('station : {}'.format(','.join(STATION_CODE)))
+
+def parse_options(args):
     verbos = '0'
-    STATION_CODE = ['ICN','GMP','CJU','CJJ','PUS','KUV']
+    station = None
+    out_dir = None
+    log_dir = None
     if(len(sys.argv) < 2):
-        print('argument error :: ReadAirlineInformation.py -s <station>')
+        help()
         sys.exit(2)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hv:s:",["station="])
+        opts, args = getopt.getopt(sys.argv[1:],"hs:o:v:l:",["help"])
     except getopt.GetoptError:
-        print('option error :: ReadAirlineInformation.py -s <station> -v <verbos>')
+        help()
         sys.exit(2)
     for opt, arg in opts:
-        if opt == '-h':
-            print('usage :: ReadAirlineInformation.py -s <station> -v <verbos>')
-            print('station :: {}'.format(','.join(STATION_CODE)))
-            print('verbos :: 0 - develop, 1 - production')
+        if opt == '-h' or opt == '--help':
+            help()
             sys.exit()
         elif opt == '-v':
             verbos = arg
-        elif opt in ("-s", "--station"):
+        elif opt == '-o':
+            out_dir = arg
+        elif opt == '-l':
+            log_dir = arg
+        elif opt == '-s':
             station = arg.upper()
-
-    print('verbos option :: {}'.format(verbos))
-    print('station option :: {}'.format(station))
+    
+    if(not(station and out_dir and log_dir)):
+        help()
+        sys.exit()
+    
+    station = station.upper()
+    out_dir = os.path.dirname(out_dir)
+    log_dir = os.path.dirname(log_dir)
     if(station not in STATION_CODE):
-        print('check usage :: ReadAirlineInformation.py -s <station>')
-        print('station list :: {}'.format(','.join(STATION_CODE)))
+        help()
         sys.exit()
 
+    return (station,out_dir,log_dir,verbos)
+
+if __name__ == "__main__":
+    station,out_dir,log_dir,verbos = parse_options(sys.argv)
     # lobber
     logger = logging.getLogger('mylogger')
     # fomatter
     fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
-    filename = './logs/python.log'
-    # lober level
+    filename = log_dir + '/python.log'
+    # loger level
     if(verbos == '0'):
         loggerLevel = logging.DEBUG
     else:
@@ -161,11 +180,11 @@ if __name__ == "__main__":
     try:
         if(station == 'ICN'):
             logger.info('start reading {} information'.format(station))
-            icn_sch_list()
+            icn_sch_list(dir_name=out_dir)
             logger.info('end reading {} information'.format(station))
         else:
             logger.info('start reading {} information'.format(station))
-            kac_sch_list(station)            
+            kac_sch_list(station,dir_name=out_dir)            
             logger.info('end reading {} information'.format(station))
     except Exception as e:
         logger.error('Exception occured!')

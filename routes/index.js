@@ -20,10 +20,12 @@ router.get('/board', function(req, res, next) {
     req.flash('loginMessage', '정상적으로 접속해주세요.');
     res.redirect("/");
   }else{
+    console.log(req.session.passport.user.auth);
     res.render('flight_board', {
       title: 'EastarJet Flight Plotting Board!',
       message: req.flash('loginMessage'),
-      tab_index: 2
+      tab_index: 2,
+      auth: req.session.passport.user.auth
     });
   }
 });

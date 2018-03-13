@@ -100,7 +100,8 @@
 <body>
 <div class="container">
 	<% include ./menu.ejs %>
-	<div id="controls" class="navbar-form navbar-static-top">
+	<!-- <div id="controls" class="navbar-form navbar-static-top"> -->
+	<div id="controls" class="masthead clearfix">
 		<label class="control-label">Date</label>
 		<input type="date" id="log_date" name="log_date">
 		<label class="control-label">Station</label>
@@ -225,7 +226,7 @@ $('#flt_modal #sel_deptB').on("change",()=>{
 			filter_emps(recordset,$('#flt_modal #sel_deptB').val()));
 	$('#flt_modal #sel_deptBS').val('')
 })
-
+<% if(auth == 'W') { %>
 $('#flt_modal #btn_save').on('click',(e)=>{
 	console.log('btn_save');
 	//console.log(e);
@@ -267,7 +268,8 @@ $('#flt_modal #btn_save').on('click',(e)=>{
 	// hide modal
 	$('#flt_modal').modal('hide');
 });
+<% } %>
 </script>
-</body>
+  </body>
 <% include ./tail.ejs %>
 </html>

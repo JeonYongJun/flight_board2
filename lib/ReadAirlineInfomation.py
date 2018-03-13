@@ -152,11 +152,12 @@ def parse_options(args):
 
 if __name__ == "__main__":
     station,out_dir,log_dir,verbos = parse_options(sys.argv)
+    print(station,out_dir,log_dir,verbos)
     # lobber
     logger = logging.getLogger('mylogger')
     # fomatter
     fomatter = logging.Formatter('[%(levelname)s|%(filename)s:%(lineno)s] %(asctime)s > %(message)s')
-    filename = log_dir + '/python.log'
+    filename = os.path.join(log_dir,'python.log')
     # loger level
     if(verbos == '0'):
         loggerLevel = logging.DEBUG

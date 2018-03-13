@@ -152,7 +152,7 @@ def parse_options(args):
 
 if __name__ == "__main__":
     station,out_dir,log_dir,verbos = parse_options(sys.argv)
-    print(station,out_dir,log_dir,verbos)
+    #print(station,out_dir,log_dir,verbos)
     # lobber
     logger = logging.getLogger('mylogger')
     # fomatter

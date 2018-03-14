@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "forever ./bin/www",
-    "server": "forever start -l forever.log -o out.log -e err.log ./bin/www"
+    "start": "supervisor ./bin/www"
   },
   "dependencies": {
     "axios": "^0.18.0",

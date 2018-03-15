@@ -15,18 +15,20 @@ router.get('/', function(req, res, next) {
 });
 router.get('/board', function(req, res, next) {
   console.log('flight_board');
-  if(!req.session.passport && process.env.DB_CONFIG == 'real'){
-    // login page
-    req.flash('loginMessage', '정상적으로 접속해주세요.');
-    res.redirect("/");
-  }else{
-    console.log(req.session.passport.user.auth);
+  console.log(req.session);
+  if(req.session.passport != undefined || process.env.DB_CONFIG != 'real'){
+    var auth = req.session.passport != undefined?req.session.passport.user.auth:'W';
+    console.log(auth);
     res.render('flight_board', {
       title: 'EastarJet Flight Plotting Board!',
       message: req.flash('loginMessage'),
       tab_index: 2,
-      auth: req.session.passport.user.auth
+      auth: auth
     });
+  }else{
+    // login page
+    req.flash('loginMessage', '정상적으로 접속해주세요.');
+    res.redirect("/");
   }
 });
 router.get('/help', function(req, res, next) {

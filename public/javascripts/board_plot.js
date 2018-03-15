@@ -245,6 +245,12 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr("id","GateTo")
       .attr('gate_num','')
       .attr("font-size","13");
+    draw_text(gate_g,box_w+1,box_h+7,"")
+    .attr('text-anchor','start')
+    .attr("id","GateToTime")
+    .attr('gate_num_time','')
+    .attr("font-size","12")
+    .attr("fill","darkgreen");
     draw_text(gate_g,box_w+27,box_h-5,"")
       .attr('text-anchor','start')
       .attr("id","GateTmp")
@@ -341,9 +347,16 @@ function show_gate_num(){
       //게이트 번호 붙이기
       //console.log(d);
       if(d.flt != ""){
-        var gete_g = d3.select('#flt_'+d.flt);
-        if(d.type == 'D') gete_g.select('#GateFrom').attr('gate_num',d.gate).text(d.gate+'-');
-        else gete_g.select('#GateTo').attr('gate_num',d.gate).text('-'+d.gate);
+        var gate_g = d3.select('#flt_'+d.flt);
+        if(d.type == 'D'){
+          gate_g.select('#GateFrom').attr('gate_num',d.gate).text(d.gate+'-');
+        }else{
+          gate_g.select('#GateTo').attr('gate_num',d.gate).text('-'+d.gate);
+          // Arrival && ICN && 도착하지 않은 경우(sch_end_time == '') 예정 시간 표시(파란색)
+          if(sel_station === 'ICN'){
+            gate_g.select('#GateToTime').attr('gate_num_time',d.to).text('('+d.to+')');
+          }
+        }
       }
     });
   });
@@ -368,22 +381,23 @@ function show_emp(id,sub_nm=""){
 // show lov check
 function show_lov_check(parent,lov_msg){
   console.log(lov_msg);
-  if(lov_msg === '') return;
   parent.select('#daily_check').remove();
-  d3.text('/images/flight3.svg',(d)=>{
-    var x = parent.select('rect').attr('width')-30;
-    var y = -25
-    var daily_check = parent.append('g')
-    .attr('id','daily_check')
-    .attr('transform',`translate(${x},${y})`);
-    daily_check.append('path').attr('d',d)
-      .attr('transform',`translate(50,-5) rotate(1)`)
-      .attr('opacity','0.5');
-    draw_text(daily_check,90,75,lov_msg)
-    .attr('text-anchor','start')
-    .attr("id","check_txt").attr("lov",lov_msg)
-    .attr("font-size","14").attr("fill","darkred");
-  });
+  if(lov_msg !== ''){
+    d3.text('/images/flight3.svg',(d)=>{
+      var x = parent.select('rect').attr('width')-30;
+      var y = -25
+      var daily_check = parent.append('g')
+      .attr('id','daily_check')
+      .attr('transform',`translate(${x},${y})`);
+      daily_check.append('path').attr('d',d)
+        .attr('transform',`translate(50,-5) rotate(1)`)
+        .attr('opacity','0.5');
+      draw_text(daily_check,90,75,lov_msg)
+      .attr('text-anchor','start')
+      .attr("id","check_txt").attr("lov",lov_msg)
+      .attr("font-size","14").attr("fill","darkred");
+    });
+  }
 }
 
 // save workers
@@ -432,7 +446,7 @@ function save_descs(parent,msg){
 function save_lov_check(parent,lov){
   console.log('save_lov_check');
   console.log(lov);
-  if(lov != null && lov != ''){
+  if(lov != null){
     //var lov = parent.select('#daily_check').select('#check_txt').attr('lov');
     let p_data = parent.data()[0];
     let save_data = {
@@ -440,7 +454,7 @@ function save_lov_check(parent,lov){
       ACNumber:p_data.ACNumber,
       OperationType:'C',//daily check type
       Remarks: lov,//check_lov.value(lov),// LOV MSG
-      Used:'Y'
+      Used:lov === ''?'N':'Y'
     };
     console.log(parent.data());
     console.log(save_data);

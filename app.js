@@ -77,4 +77,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+console.log('app ready!');
 module.exports = app;

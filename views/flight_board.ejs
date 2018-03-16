@@ -42,57 +42,67 @@
       });
 		}
 
-		function init_controls(){
-			// initialize control
-      var station_list = ['ALL','GMP','ICN','CJU','CJJ','KUV','PUS']
-      for(station in station_list){
-      	d3.select('#station').append('option')
-          .attr('value',station_list[station]).text(station_list[station]);
-      }
-      var today = yyyymmdd(new Date());
-      d3.select('#log_date').property('value',today);
-      d3.select('#station').property('value','GMP');
-
-			// event for show_list button
-			d3.select('#show_list').property('disabled',false);
-			d3.select('#show_list').on('click',()=>{
-				d3.select('#show_list').property('disabled',true);
-				var sel_date = d3.select('#log_date').property('value');
-				var sel_station = d3.select('#station').property('value');
-				var json_url = '/flight_board/plan/'+sel_date+'/'+sel_station;
-				d3.json(json_url,(err,data)=>{
+	function init_controls(){
+		// initialize control
+		var station_list = ['ALL','GMP','ICN','CJU','CJJ','KUV','PUS']
+		d3.json('/code/station',(err,data)=>{
+			//console.log(data);
+			d3.select('#station').append('option')
+					.attr('value','ALL').text('ALL');
+			data.data.recordset.forEach((d)=>{
+			//console.log(d);
+			d3.select('#station').append('option')
+					.attr('value',d.CodeCode).text(d.CodeCode);
+			});
+		});
+		// update station code from db
+		// for(station in station_list){
+		// 	d3.select('#station').append('option')
+		// 		.attr('value',station_list[station]).text(station_list[station]);
+		// }
+		var today = yyyymmdd(new Date());
+		d3.select('#log_date').property('value',today);
+		d3.select('#station').property('value','GMP');
+		// event for show_list button
+		d3.select('#show_list').property('disabled',false);
+		d3.select('#show_list').on('click',()=>{
+			d3.select('#show_list').property('disabled',true);
+			var sel_date = d3.select('#log_date').property('value');
+			var sel_station = d3.select('#station').property('value');
+			var json_url = '/flight_board/plan/'+sel_date+'/'+sel_station;
+			d3.json(json_url,(err,data)=>{
+				//console.log(data);
+				if(err){
+					console.log(err);
 					//console.log(data);
-					if(err){
-						console.log(err);
-						//console.log(data);
-						alert('Server Internal Error, please email to system administrator!')
-					}else{
-						//console.log(data.plan);
-						draw_plot(sel_date,sel_station,data.plan.recordset);
-					}
-				});
-				d3.select('#show_list').property('disabled',false);
+					alert('Server Internal Error, please email to system administrator!')
+				}else{
+					//console.log(data.plan);
+					draw_plot(sel_date,sel_station,data.plan.recordset);
+				}
 			});
-			// 스케줄 데이터 업데이트
+			d3.select('#show_list').property('disabled',false);
+		});
+		// 스케줄 데이터 업데이트
+		d3.select('#update_list').property('disabled',false);
+		d3.select('#update_list').on('click',()=>{
+			d3.select('#update_list').property('disabled',true);
+			show_update_schedule();
 			d3.select('#update_list').property('disabled',false);
-			d3.select('#update_list').on('click',()=>{
-				d3.select('#update_list').property('disabled',true);
-				show_update_schedule();
-				d3.select('#update_list').property('disabled',false);
-			});
+		});
 
-			// 게이트 데이터 업데이트
+		// 게이트 데이터 업데이트
+		d3.select('#gate_list').property('disabled',false);
+		d3.select('#gate_list').on('click',()=>{
+			d3.select('#gate_list').property('disabled',true);
+			show_gate_num();
 			d3.select('#gate_list').property('disabled',false);
-			d3.select('#gate_list').on('click',()=>{
-				d3.select('#gate_list').property('disabled',true);
-				show_gate_num();
-				d3.select('#gate_list').property('disabled',false);
-			});
+		});
 		}
 
     $('document').ready(()=>{
       console.log('ready');
-			init_flight_info();
+			//init_flight_info();
 			init_controls();
 		});
 	</script>

@@ -399,9 +399,9 @@ function show_lov_check(parent,lov_msg){
       .attr('id','daily_check')
       .attr('transform',`translate(${x},${y})`);
       daily_check.append('path').attr('d',d)
-        .attr('transform',`translate(50,-5) rotate(1)`)
+        .attr('transform',`translate(28,5) scale(0.7) rotate(1)`)
         .attr('opacity','0.5');
-      draw_text(daily_check,90,75,lov_msg)
+      draw_text(daily_check,32,60,lov_msg)
       .attr('text-anchor','start')
       .attr("id","check_txt").attr("lov",lov_msg)
       .attr("font-size","14").attr("fill","darkred");

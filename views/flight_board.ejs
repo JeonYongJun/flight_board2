@@ -137,66 +137,86 @@
 					<label id="StardardTime"></label>
 			</div>
 			<table class="table table-bordered">
-					<tr class='active'>
-							<th width="120">정비 지원</th>
-							<th>부서</th><th>메인</th><th>서브</th>
-					</tr>
-					<tr>
-							<td>출발 지원</td>
-							<td><select class="form-control input-sm" id="sel_deptD">
-								<option>부서</option>
-							</select></td>
-							<td><select class="form-control input-sm" id="sel_deptDM">
-									<option>메인</option>
-								</select></td>
-							<td><select class="form-control input-sm" id="sel_deptDS">
-									<option>서브</option>
-								</select></td>
-					</tr>
-					<tr>
-							<td>도착 지원</td>
-							<td><select class="form-control input-sm" id="sel_deptA">
-									<option>부서</option>
-								</select></td>
-								<td><select class="form-control input-sm" id="sel_deptAM">
-										<option>메인</option>
-									</select></td>
-								<td><select class="form-control input-sm" id="sel_deptAS">
-										<option>서브</option>
-									</select></td>
-						</tr>
-					<tr>
-							<td>탑승 지원</td>
-							<td><select class="form-control input-sm" id="sel_deptB">
-									<option>부서</option>
-								</select></td>
-								<td><select class="form-control input-sm" id="sel_deptBM">
-										<option>메인</option>
-									</select></td>
-								<td><select class="form-control input-sm" id="sel_deptBS">
-									<option>서브</option>
-								</select></td>
-					</tr>
-					<tr>
-						<td>주기장</td>
-						<td><label for="gate_from">출발</label><input type="text" class="form-control input-sm" id="gate_from" placeholder="출발게이트" readonly></td>
-						<td><label for="gate_to">도착</label><input type="text" class="form-control input-sm" id="gate_to" placeholder="도착게이트" readonly></td>
-						<td><label for="gate_tmp">토잉</label><input type="text" class="form-control input-sm" id="gate_tmp" placeholder="토잉"></td>
-					</tr>
-					<tr>
-							<td colspan="2">도착후 주요정비</td>
-							<td colspan="2">
-										<select class="form-control input-sm" id="main_chk">
-											<option>DAY CHK</option>
-										</select>
-							</td>
-					</tr>
-					<tr>
-							<td colspan="4"><label for="comment">Comment</label>
-									<textarea class="form-control" id="flt_msg" rows="3"></textarea>
-							</td>
-						</tr>
-				</table>
+				<tr class='active'>
+					<th width="80">정비 지원</th><th>메인</th><th>서브</th>
+				</tr>
+				<tr>
+					<td>출발 지원</td>
+					<td>
+						<form class="form-inline"><div class="form-group">
+						<select class="form-control input-sm" id="key_deptDM"><option>부서</option></select>
+						<select class="form-control input-sm" id="sel_deptDM"><option>메인</option></select>
+						</div></form>
+					</td>
+					<td>
+						<form class="form-inline"><div class="form-group">
+						<select class="form-control input-sm" id="key_deptDS"><option>부서</option></select>
+						<select class="form-control input-sm" id="sel_deptDS"><option>서브</option></select>
+						</div></form>
+					</td>
+				</tr>
+				<tr>
+					<td>도착 지원</td>
+					<td>
+						<form class="form-inline"><div class="form-group">
+						<select class="form-control input-sm" id="key_deptAM"><option>부서</option></select>
+						<select class="form-control input-sm" id="sel_deptAM"><option>메인</option></select>
+						</div></form>
+					</td>
+					<td>
+						<form class="form-inline"><div class="form-group">
+						<select class="form-control input-sm" id="key_deptAS"><option>부서</option></select>
+						<select class="form-control input-sm" id="sel_deptAS"><option>서브</option></select>
+						</div></form>
+					</td>
+				</tr>
+				<tr>
+					<td>탑승 지원</td>
+					<td>
+						<form class="form-inline"><div class="form-group">
+						<select class="form-control input-sm" id="key_deptBM"><option>부서</option></select>
+						<select class="form-control input-sm" id="sel_deptBM"><option>메인</option></select>
+						</div></form>
+					</td>
+					<td>
+						<form class="form-inline"><div class="form-group">
+						<select class="form-control input-sm" id="key_deptBS"><option>부서</option></select>
+						<select class="form-control input-sm" id="sel_deptBS"><option>서브</option></select>
+						</div></form>
+					</td>
+				</tr>
+			</table>
+			<table class="table table-bordered">
+				<tr>
+					<td>
+						<form class="form-inline">
+							<div class="form-group">
+								<label>주기장 : </label>(출발 - 도착 - 토잉)
+								<input type="text" class="form-control input-sm" id="gate_from" placeholder="출발게이트" readonly style="width:80px">
+								<input type="text" class="form-control input-sm" id="gate_to" placeholder="도착게이트" readonly style="width:80px">
+								<input type="text" class="form-control input-sm" id="gate_tmp" placeholder="토잉" style="width:80px">
+							</div>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<form class="form-inline">
+							<div class="form-group">
+								<label for="main_chk">도착후 주요정비 :</label>
+								<select class="form-control input-sm" id="main_chk">
+									<option>DAY CHK</option>
+								</select>
+							</div>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="comment">Comment</label>
+							<textarea class="form-control" id="flt_msg" rows="3"></textarea>
+					</td>
+				</tr>
+		</table>
 		</div>
 		<div class="modal-footer">
 			<button type="button" id='btn_save' class="btn btn-primary">Summit</button>
@@ -207,26 +227,29 @@
 		</div><!-- /.modal -->
 <script>
 //event binding
-$('#flt_modal #sel_deptD').on("change",()=>{
+$('#flt_modal #key_deptDM').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptDM'),
-			filter_emps(recordset,$('#flt_modal #sel_deptD').val()));
+			filter_emps(recordset,$('#flt_modal #key_deptDM').val()));
+})
+$('#flt_modal #key_deptDS').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptDS'),
-			filter_emps(recordset,$('#flt_modal #sel_deptD').val()));
-	$('#flt_modal #sel_deptDS').val('');
+			filter_emps(recordset,$('#flt_modal #key_deptDS').val()));
 })
-$('#flt_modal #sel_deptA').on("change",()=>{
+$('#flt_modal #key_deptAM').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptAM'),
-			filter_emps(recordset,$('#flt_modal #sel_deptA').val()));
-	set_select(d3.select('#flt_modal').select('#sel_deptAS'),
-			filter_emps(recordset,$('#flt_modal #sel_deptA').val()));
-	$('#flt_modal #sel_deptAS').val('');
+			filter_emps(recordset,$('#flt_modal #key_deptAM').val()));
 })
-$('#flt_modal #sel_deptB').on("change",()=>{
+$('#flt_modal #key_deptAS').on("change",()=>{
+	set_select(d3.select('#flt_modal').select('#sel_deptAS'),
+			filter_emps(recordset,$('#flt_modal #key_deptAS').val()));
+})
+$('#flt_modal #key_deptBM').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptBM'),
-			filter_emps(recordset,$('#flt_modal #sel_deptB').val()));
+			filter_emps(recordset,$('#flt_modal #key_deptBM').val()));
+})
+$('#flt_modal #key_deptBS').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptBS'),
-			filter_emps(recordset,$('#flt_modal #sel_deptB').val()));
-	$('#flt_modal #sel_deptBS').val('')
+			filter_emps(recordset,$('#flt_modal #key_deptBS').val()));
 })
 <% if(auth == 'W') { %>
 $('#flt_modal #btn_save').on('click',(e)=>{
@@ -239,7 +262,7 @@ $('#flt_modal #btn_save').on('click',(e)=>{
 	selected_box.select('#workerD').attr('empcd',$('#flt_modal #sel_deptDM').val()).text($('#flt_modal #sel_deptDM option:selected').text());
 	selected_box.select('#workerD').attr('sub_empcd',$('#flt_modal #sel_deptDS').val()).attr('sub_empnm',$('#flt_modal #sel_deptDS option:selected').text());
 	selected_box.select('#workerB').attr('empcd',$('#flt_modal #sel_deptBM').val()).text($('#flt_modal #sel_deptBM option:selected').text());
-	selected_box.select('#workerB').attr('sub_empcd',$('#flt_modal #sel_deptBS').val()).attr('sub_empnm',$('#flt_modal #sel_deptDS option:selected').text());
+	selected_box.select('#workerB').attr('sub_empcd',$('#flt_modal #sel_deptBS').val()).attr('sub_empnm',$('#flt_modal #sel_deptBS option:selected').text());
 	save_workers(selected_box);
 
 	// 2. 주기장

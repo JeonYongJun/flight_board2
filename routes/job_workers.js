@@ -75,28 +75,34 @@ router.get('/workers/:date/:station',function(req,res,next){
   var date2 = getDate(date,1);
   //var date2 = getDate(date,1);
   var query = `DECLARE @Station NVARCHAR(3) SET @Station = '${port}';
-              DECLARE @FromDate DATETIME SET @FromDate = '${date1} 04:00:00.000';
-              DECLARE @ToDate DATETIME SET @ToDate = '${date2} 04:00:00.000';
-              SELECT p.FlightPlanID, ACNumber, FlightNumber, e.EmpCode, OperationType, ResponsibilityType, em.EmpName
-              FROM FlightPlan p, FlightPlotEmployee e, EmpMaster em
-              WHERE
-              ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
-              AND ( RouteFrom = @Station OR RouteTo = @Station )
-              AND p.FlightPlanID = e.FlightPlanID
-              AND e.EmpCode = em.EmpCode
-              AND e.Used = 'Y'
-              ORDER BY FlightKey ASC`
+    DECLARE @SelFromDate DATETIME SET @SelFromDate = '${date1} 04:00:00.000';
+    DECLARE @SelToDate DATETIME SET @SelToDate = '${date2} 04:00:00.000';
+    DECLARE @UTCValue TINYINT SET @UTCValue = 9
+    DECLARE @FromDate DATETIME SET @FromDate = DATEADD(HH,-@UTCValue,CONVERT(DATETIME,@SelFromDate));
+    DECLARE @ToDate DATETIME SET @ToDate = DATEADD(HH,-@UTCValue,CONVERT(DATETIME,@SelToDate));
+    SELECT p.FlightPlanID, ACNumber, FlightNumber, e.EmpCode, OperationType, ResponsibilityType, em.EmpName
+    FROM FlightPlan p, FlightPlotEmployee e, EmpMaster em
+    WHERE
+    ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
+    AND ( RouteFrom = @Station OR RouteTo = @Station )
+    AND p.FlightPlanID = e.FlightPlanID
+    AND e.EmpCode = em.EmpCode
+    AND e.Used = 'Y'
+    ORDER BY FlightKey ASC`
   if(port == 'ALL'){
-    query = `DECLARE @FromDate DATETIME SET @FromDate = '${date1} 04:00:00.000';
-            DECLARE @ToDate DATETIME SET @ToDate = '${date2} 04:00:00.000';
-            SELECT p.FlightPlanID, ACNumber, FlightNumber, e.EmpCode, OperationType, ResponsibilityType, em.EmpName
-            FROM FlightPlan p, FlightPlotEmployee e, EmpMaster em
-            WHERE
-            ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
-            AND p.FlightPlanID = e.FlightPlanID
-            AND e.EmpCode = em.EmpCode
-            AND e.Used = 'Y'
-            ORDER BY FlightKey ASC`
+    query = `DECLARE @SelFromDate DATETIME SET @SelFromDate = '${date1} 04:00:00.000';
+      DECLARE @SelToDate DATETIME SET @SelToDate = '${date2} 04:00:00.000';
+      DECLARE @UTCValue TINYINT SET @UTCValue = 9
+      DECLARE @FromDate DATETIME SET @FromDate = DATEADD(HH,-@UTCValue,CONVERT(DATETIME,@SelFromDate));
+      DECLARE @ToDate DATETIME SET @ToDate = DATEADD(HH,-@UTCValue,CONVERT(DATETIME,@SelToDate));
+      SELECT p.FlightPlanID, ACNumber, FlightNumber, e.EmpCode, OperationType, ResponsibilityType, em.EmpName
+      FROM FlightPlan p, FlightPlotEmployee e, EmpMaster em
+      WHERE
+      ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
+      AND p.FlightPlanID = e.FlightPlanID
+      AND e.EmpCode = em.EmpCode
+      AND e.Used = 'Y'
+      ORDER BY FlightKey ASC`
   }
   console.log(query);
 
@@ -131,6 +137,11 @@ router.post('/save',function(req,res,next){
         VALUES ( ${worker_data.FlightPlanID}, '${worker_data.WorkerList[i][0]}',
         '${worker_data.WorkerList[i][1]}', '${worker_data.WorkerList[i][2]}', 'Y', 'ADMIN', GETDATE())
       OUTPUT INSERTED.FlightPlotEmployeeID AS FlightPlotEmployeeID;\n`
+    }else{
+      query +=
+      `UPDATE FlightPlotEmployee SET Used = 'N', UpdateID = 'ADMIN', UpdateDate = GETDATE()
+      WHERE FlightPlanID =  ${worker_data.FlightPlanID}
+      AND OperationType = '${worker_data.WorkerList[i][1]}' and ResponsibilityType = '${worker_data.WorkerList[i][2]}';\n`
     }
   }
   console.log(query);

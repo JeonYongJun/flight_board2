@@ -507,51 +507,69 @@ function show_flt_modal(d){
     recordset = data.data.recordset;
     var dept_codes = filter_depts(recordset);
     //Departure Worker 
-    var dept_select = d3.select('#flt_modal').select('#sel_deptD');
+    var dept_select = d3.select('#flt_modal').select('#key_deptDM');
     set_select(dept_select,dept_codes);
     var empcd = selected_box.select('#workerD').attr('empcd');
     var deptcd = emp_to_dept(recordset,empcd);
-    $('#flt_modal #sel_deptD').val(deptcd);
+    $('#flt_modal #key_deptDM').val(deptcd);
     var emp_codes = filter_emps(recordset,deptcd)
     var emp_select = d3.select('#flt_modal').select('#sel_deptDM');
     set_select(emp_select,emp_codes);
     $('#flt_modal #sel_deptDM').val(empcd);
-    //sub는 main과 같은 반으로 움직인다고 가정하고 처리
+    //sub는 main과 같은 반으로 움직인다고 가정하고 처리 => 별도 처리 변경(2018-03-15)
+    dept_select = d3.select('#flt_modal').select('#key_deptDS');
+    set_select(dept_select,dept_codes);
+    empcd = selected_box.select('#workerD').attr('sub_empcd');
+    deptcd = emp_to_dept(recordset,empcd);
+    console.log('sub dept : ' + deptcd);
+    $('#flt_modal #key_deptDS').val(deptcd);
+    emp_codes = filter_emps(recordset,deptcd)
     emp_select = d3.select('#flt_modal').select('#sel_deptDS');
     set_select(emp_select,emp_codes);
-    empcd = selected_box.select('#workerD').attr('sub_empcd');
     $('#flt_modal #sel_deptDS').val(empcd);
 
     //Arrival Worker
-    dept_select = d3.select('#flt_modal').select('#sel_deptA');
+    dept_select = d3.select('#flt_modal').select('#key_deptAM');
     set_select(dept_select,dept_codes);
     empcd = selected_box.select('#workerA').attr('empcd');
     deptcd = emp_to_dept(recordset,empcd);
-    $('#flt_modal #sel_deptA').val(deptcd);
+    $('#flt_modal #key_deptAM').val(deptcd);
     emp_codes = filter_emps(recordset,deptcd)
     emp_select = d3.select('#flt_modal').select('#sel_deptAM');
     set_select(emp_select,emp_codes);
     $('#flt_modal #sel_deptAM').val(empcd);
-    //sub는 main과 같은 반으로 움직인다고 가정하고 처리
+    //sub는 main과 같은 반으로 움직인다고 가정하고 처리 => 별도 처리 변경(2018-03-15)
+    dept_select = d3.select('#flt_modal').select('#key_deptAS');
+    set_select(dept_select,dept_codes);
+    empcd = selected_box.select('#workerA').attr('sub_empcd');
+    deptcd = emp_to_dept(recordset,empcd);
+    console.log('sub dept : ' + deptcd);
+    $('#flt_modal #key_deptAS').val(deptcd);
+    emp_codes = filter_emps(recordset,deptcd)
     emp_select = d3.select('#flt_modal').select('#sel_deptAS');
     set_select(emp_select,emp_codes);
-    empcd = selected_box.select('#workerA').attr('sub_empcd');
     $('#flt_modal #sel_deptAS').val(empcd);
 
     //Boarding
-    dept_select = d3.select('#flt_modal').select('#sel_deptB');
+    dept_select = d3.select('#flt_modal').select('#key_deptBM');
     set_select(dept_select,dept_codes);
     empcd = selected_box.select('#workerB').attr('empcd');
     deptcd = emp_to_dept(recordset,empcd);
-    $('#flt_modal #sel_deptB').val(deptcd);
+    $('#flt_modal #key_deptBM').val(deptcd);
     emp_codes = filter_emps(recordset,deptcd)
     emp_select = d3.select('#flt_modal').select('#sel_deptBM');
     set_select(emp_select,emp_codes);
     $('#flt_modal #sel_deptBM').val(empcd);
-    //sub는 main과 같은 반으로 움직인다고 가정하고 처리
+    //sub는 main과 같은 반으로 움직인다고 가정하고 처리 => 별도 처리 변경(2018-03-15)
+    dept_select = d3.select('#flt_modal').select('#key_deptBS');
+    set_select(dept_select,dept_codes);
+    empcd = selected_box.select('#workerB').attr('sub_empcd');
+    deptcd = emp_to_dept(recordset,empcd);
+    console.log('sub dept : ' + deptcd);
+    $('#flt_modal #key_deptBS').val(deptcd);
+    emp_codes = filter_emps(recordset,deptcd)
     emp_select = d3.select('#flt_modal').select('#sel_deptBS');
     set_select(emp_select,emp_codes);
-    empcd = selected_box.select('#workerB').attr('sub_empcd');
     $('#flt_modal #sel_deptBS').val(empcd);
 
     //LOV 코드

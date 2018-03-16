@@ -8,40 +8,23 @@
 	<script type="text/javascript" src="/javascripts/board_plot.js"></script>
 	<link href="/stylesheets/board.css" rel="stylesheet" type="text/css"></link>
 	<script>
-		function init_flight_info(){
-			d3.select('#flight_info').append('p').attr('id','information');
-      d3.select('#flight_info').append('p').attr('id','add_work');
-      d3.select('#add_work').html(`정비사 추가 => 정비사 1:
-      <input type="text" name="worker1" id="job_worker1" placeholder="받을 정비사"> ~ 정비사 2:
-      <input type="text" name="worker2" id="job_worker2" placeholder="보낼 정비사">
-      <button id="info_close">닫기</button>
-      <button id="worker_add">추가</button>`);
-
-			// Flight detail info window
-      d3.select('#info_close').on('click',function(){
-        d3.select("#flight_info").attr("class","info_hidden");
-      });
-			// process for adding workers
-      d3.select('#worker_add').on('click',function(){
-        var worker1 = d3.select('#job_worker1').property('value');
-        d3.select('#job_worker1').property('value','');
-				var box_g = d3.select(selected_box.node().parentNode);
-        if(worker1 != ''){
-          //draw_text(box_g,-10,-10,worker1)
-          //.attr("font-size","14").attr("font-weight","10");
-					box_g.select('#worker1').text(worker1);
-        }
-        var worker2 = d3.select('#job_worker2').property('value');
-        d3.select('#job_worker2').property('value','');
-        if(worker2 != ''){
-          //draw_text(box_g,selected_box.attr("width")-30,-10,worker2)
-          //.attr("font-size","14").attr("font-weight","10");
-					box_g.select('#worker2').text(worker2);
-        }
-        d3.select("#flight_info").attr("class","info_hidden");
-      });
+	var geneva = null;
+	// search geneva data with d3 data
+	function filter_geneva(d3data){
+		if(geneva === null) return;
+		return geneva[d3data.ACNumber].filter((e)=>{
+			return e.SectorKey == d3data.FlightKey.split('_')[1]
+		});
+	}
+	//geneva crew str(name|id|rank\...) => rank - name(id),...
+	function crew_info(info){
+		var crews = [];
+		var info_arr = info.split('|');
+		for(var i=0; i < info_arr.length; i+=3) {
+			crews.push(`${info_arr[i+2]} - ${info_arr[i]}(${info_arr[i+1]})`);
 		}
-
+		return crews;
+	}
 	function init_controls(){
 		// initialize control
 		var station_list = ['ALL','GMP','ICN','CJU','CJJ','KUV','PUS']
@@ -80,6 +63,11 @@
 					//console.log(data.plan);
 					draw_plot(sel_date,sel_station,data.plan.recordset);
 				}
+			});
+			var geneva_url = '/geneva/'+sel_date.replace(/-/g,'');
+			d3.json(geneva_url,(err,data)=>{
+				console.log(geneva_url);
+				geneva = data;
 			});
 			d3.select('#show_list').property('disabled',false);
 		});

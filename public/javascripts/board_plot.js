@@ -152,7 +152,16 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','middle')
       .attr("id","FlightNumber_"+d.FlightNumber).attr("font-size",box_w>100?"28":"19")
       //mouse click event
-      .on('click',show_flt_modal);
+      .on('click',show_flt_modal)
+      .on('mouseover',(d)=>{
+        var sel_geneva = filter_geneva(d);
+        //console.log(sel_geneva);
+        if(sel_geneva!==null){
+          var msg = crew_info(sel_geneva[0].Crew);
+          //console.log(msg);
+          bubble_show(d3.event.pageX+20,d3.event.pageY-60,show_msg(msg.join('<br>')));
+        }
+      }).on('mouseout',(d)=>{bubble_hide();});
       //.on('click',show_worker);
     draw_text(box_g,2,box_h-5,d.RouteFrom)
       .attr('text-anchor','start')

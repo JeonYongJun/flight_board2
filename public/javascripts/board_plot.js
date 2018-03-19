@@ -1,5 +1,5 @@
 // init value
-var svg_w = 1800;//board size
+var svg_w = 1500;//board size
 var svg_h_unit = 30;//adjust board height
 var pad_left = 80, pad_right = 30, pad_top = 30, pad_bottom = 30;
 var box_h = 55;
@@ -7,8 +7,8 @@ var box_min = 70; // min width of box
 var msg_mark = '@';//text icon
 
 // time scale
-var xscale_start = '03:00';
-var xscale_end = '30:00'; //04시
+var xscale_start = '04:00';
+var xscale_end = '29:00'; //05시
 var xscale_ticks = 28; //x축의 갯수
 var parseTime = d3.timeParse("%Y-%m-%d %H:%M");
 
@@ -52,8 +52,29 @@ function flight_board(){
 
 // draw board
 function draw_plot(sel_date,sel_station,draw_data){
+    // https://github.com/wbkd/d3-extended
+    d3.selection.prototype.moveToFront = function() {  
+      return this.each(function(){
+        this.parentNode.appendChild(this);
+      });
+    };
+    d3.selection.prototype.moveToBack = function() {  
+        return this.each(function() { 
+            var firstChild = this.parentNode.firstChild; 
+            if (firstChild) { 
+                this.parentNode.insertBefore(this, firstChild); 
+            } 
+        });
+    };
+  
   var hl_set = new Set();
-  draw_data.forEach(function(d){hl_set.add(d.ACNumber);});
+  draw_data.forEach(function(d){
+    //ACNumber != null and ACNumber.length != 0
+    console.log(d.ACNumber);
+    if(d.ACNumber != null && d.ACNumber.length > 0){
+      hl_set.add(d.ACNumber);
+    }
+  });
   // y scale size 조정, hl# list 갯수만큼 생성 할 수 있도록
   var svg_height = (box_h+svg_h_unit)*(hl_set.size) + pad_top+pad_bottom;
 
@@ -106,6 +127,7 @@ function draw_plot(sel_date,sel_station,draw_data){
 
   //플라이트 정보 박스를 그려준다.
   draw_data.forEach(function(d){
+    if(d.ACNumber == null || d.ACNumber.length <= 0){ return }
     var start_time = d.StandardTimeDeparture.replace('T',' ').substring(0,16);
     var end_time = d.StandardTimeArrival.replace('T',' ').substring(0,16);
     var x1 = rtime_to_postion(d.StandardTimeDeparture);//x_scale(parseTime(start_time));
@@ -137,7 +159,9 @@ function draw_plot(sel_date,sel_station,draw_data){
     //     bubble_show(d3.event.pageX+20,d3.event.pageY-60,show_msg(msg));
     //   }
     // }).on('mouseout',(d)=>{bubble_hide();});
-
+    box_g.on("mouseover",function(){
+      d3.select(this).moveToFront();
+    });
 
     // 정보 출력
     // 1. flight mumber 가운데 출력

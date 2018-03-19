@@ -152,7 +152,7 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','middle')
       .attr("id","FlightNumber_"+d.FlightNumber).attr("font-size",box_w>100?"28":"19")
       //mouse click event
-      .on('click',show_flt_modal)
+      .on('dblclick',show_flt_modal)
       .on('mouseover',(d)=>{
         var sel_geneva = filter_geneva(d);
         //console.log(sel_geneva);

@@ -25,10 +25,10 @@
         <input type="password" name="password" id="password" class="form-control" placeholder="Groupware Password" required="">
         <div class="checkbox">
           <label>
-            <input type="checkbox" value="remember-me"> Remember me
+            <input type="checkbox" id="remember_id" value="remember-me"> Remember me
           </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" id="submit_form" type="submit">Sign in</button>
       </form>
     </div><!-- /.container -->
     <footer class="footer">
@@ -37,6 +37,25 @@
           .</p>
       </div>
     </footer>
+    <script type="text/javascript">
+      //$(document).ready(function() {
+        var remember_id = localStorage.getItem('login_id');
+        //console.log(remember_id);
+        if(remember_id != null){
+          $('#userid').val(remember_id);
+          $('#remember_id').attr("checked", true);
+        }
+      //});
+      $('#submit_form').on('click',()=>{
+        if($('#remember_id').is(':checked')){
+          localStorage.setItem('login_id',$('#userid').val());
+        }else{
+          localStorage.removeItem('login_id');
+        }
+        
+        //localStorage.set()
+      });
+    </script>
   </body>
   <% include ./tail.ejs %>
 </html>

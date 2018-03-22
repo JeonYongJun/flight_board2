@@ -50,6 +50,7 @@ var detail_info = require('./routes/other_info');
 var job_depts = require('./routes/job_depts');
 var code_info = require('./routes/code_info');
 var geneva = require('./routes/geneva');
+var report = require('./routes/report');
 //var static = require('./routes/static');
 
 app.use('/', index);
@@ -61,6 +62,7 @@ app.use('/info',detail_info);
 app.use('/depts',job_depts);
 app.use('/code',code_info);
 app.use('/geneva',geneva);
+app.use('/flight_report',report);
 //app.use('/static',static);
 
 // catch 404 and forward to error handler

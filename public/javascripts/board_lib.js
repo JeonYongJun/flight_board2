@@ -142,3 +142,12 @@ function draw_text(p_obj,x,y,text,cls="draw_text"){
   return p_obj.append("text").attr("class",cls)
     .attr("x",x).attr("y",y).text(text);
 }
+
+// make unique array
+function unique_array(arr){
+	var new_arr = arr.map(e=>{ return JSON.stringify(e) });
+  new_arr = new_arr.filter(function(r, i, self) {
+    return self.indexOf(r) == i;
+  });
+	return new_arr.map(e => { return JSON.parse(e) });
+}

@@ -6,3 +6,8 @@ exports.getdate = function(dd,delta){
     _date.add(delta,'days');
     return _date.format('YYYY-MM-DD');
 }
+
+// when saving data, check session userid
+exports.getUserId = function(session){
+  return session.passport != undefined?session.passport.user.userid:'undefined';
+}

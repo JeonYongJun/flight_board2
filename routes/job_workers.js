@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var connection = require('./db/connection');
+var util = require('./lib/util');
 
 //yyyy-mm-dd 형식 데이터와 날짜 차이값을 받아 해당 날짜 리턴
 //예 getDate('2017-11-11',2)
@@ -131,15 +132,15 @@ router.post('/save',function(req,res,next){
       ON T.FlightPlanID = S.FlightPlanID AND T.OperationType = S.OperationType
       AND T.ResponsibilityType = S.ResponsibilityType	AND T.Used = 'Y'
       WHEN MATCHED THEN
-        UPDATE SET EmpCode = ${worker_data.WorkerList[i][0]}, UpdateID = 'ADMIN', UpdateDate = GETDATE()
+        UPDATE SET EmpCode = ${worker_data.WorkerList[i][0]}, UpdateID = '${util.getUserId(req.session)}', UpdateDate = GETDATE()
       WHEN NOT MATCHED THEN
         INSERT( FlightPlanID, EmpCode, OperationType, ResponsibilityType, Used, InsertID, InsertDate)
         VALUES ( ${worker_data.FlightPlanID}, '${worker_data.WorkerList[i][0]}',
-        '${worker_data.WorkerList[i][1]}', '${worker_data.WorkerList[i][2]}', 'Y', 'ADMIN', GETDATE())
+        '${worker_data.WorkerList[i][1]}', '${worker_data.WorkerList[i][2]}', 'Y', '${util.getUserId(req.session)}', GETDATE())
       OUTPUT INSERTED.FlightPlotEmployeeID AS FlightPlotEmployeeID;\n`
     }else{
       query +=
-      `UPDATE FlightPlotEmployee SET Used = 'N', UpdateID = 'ADMIN', UpdateDate = GETDATE()
+      `UPDATE FlightPlotEmployee SET Used = 'N', UpdateID = '${util.getUserId(req.session)}', UpdateDate = GETDATE()
       WHERE FlightPlanID =  ${worker_data.FlightPlanID}
       AND OperationType = '${worker_data.WorkerList[i][1]}' and ResponsibilityType = '${worker_data.WorkerList[i][2]}';\n`
     }

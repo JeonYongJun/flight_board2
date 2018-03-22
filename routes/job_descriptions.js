@@ -66,11 +66,11 @@ router.post('/save',function(req,res,next){
     	USING ( SELECT ${desc_data.FlightPlanID} AS FlightPlanID, '${desc_data.OperationType}' AS OperationType) S
     	  ON T.FlightPlanID = S.FlightPlanID AND T.OperationType = S.OperationType
     	WHEN MATCHED THEN
-    	  UPDATE SET Remarks = '${desc_data.Remarks}', UpdateID = 'ADMIN', UpdateDate = GETDATE()
+    	  UPDATE SET Remarks = '${desc_data.Remarks}', UpdateID = '${util.getUserId(req.session)}', UpdateDate = GETDATE()
     	WHEN NOT MATCHED THEN
     	  INSERT( FlightPlanID, OperationType, Remarks, Used, InsertID, InsertDate)
     	  VALUES ( ${desc_data.FlightPlanID}, '${desc_data.OperationType}',
-        '${desc_data.Remarks}', 'Y', 'ADMIN', GETDATE())
+        '${desc_data.Remarks}', 'Y', '${util.getUserId(req.session)}', GETDATE())
     OUTPUT INSERTED.FlightPlotID AS FlightPlotID;`
 
     console.log(query);
@@ -100,11 +100,11 @@ router.post('/daily_check',function(req,res,next){
   	USING ( SELECT ${desc_data.FlightPlanID} AS FlightPlanID, '${desc_data.OperationType}' AS OperationType) S
   	  ON T.FlightPlanID = S.FlightPlanID AND T.OperationType = S.OperationType
   	WHEN MATCHED THEN
-  	  UPDATE SET Remarks = '${desc_data.Remarks}', Used='${desc_data.Used}', UpdateID = 'ADMIN', UpdateDate = GETDATE()
+  	  UPDATE SET Remarks = '${desc_data.Remarks}', Used='${desc_data.Used}', UpdateID = '${util.getUserId(req.session)}', UpdateDate = GETDATE()
   	WHEN NOT MATCHED THEN
   	  INSERT( FlightPlanID, OperationType, Remarks, Used, InsertID, InsertDate)
   	  VALUES ( ${desc_data.FlightPlanID}, '${desc_data.OperationType}',
-      '${desc_data.Remarks}', '${desc_data.Used}', 'ADMIN', GETDATE())
+      '${desc_data.Remarks}', '${desc_data.Used}', '${util.getUserId(req.session)}', GETDATE())
   OUTPUT INSERTED.FlightPlotID AS FlightPlotID;`
 
   console.log(query);

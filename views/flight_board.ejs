@@ -49,10 +49,12 @@
 		// event for show_list button
 		d3.select('#show_list').property('disabled',false);
 		d3.select('#show_list').on('click',()=>{
+			console.log('show_list');
 			d3.select('#show_list').property('disabled',true);
 			var sel_date = d3.select('#log_date').property('value');
 			var sel_station = d3.select('#station').property('value');
 			var json_url = '/flight_board/plan/'+sel_date+'/'+sel_station;
+			//console.log(json_url);
 			d3.json(json_url,(err,data)=>{
 				//console.log(data);
 				if(err){
@@ -96,13 +98,119 @@
 	</script>
 </head>
 <body>
-<div class="container">
+<!-- modal -->
+<div class="modal fade" id='flt_modal' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>Flight Detail Infomation!</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-inline">
+							<label>Flight Info: </label>
+							<span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+							<label id="FlightNumber"></label>
+							<label id="Route"></label>
+							<span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+							<label id="StardardTime"></label>
+					</div>
+					<table class="table table-bordered">
+						<tr class='active'>
+							<th width="80">정비 지원</th><th>메인</th><th>서브</th>
+						</tr>
+						<tr>
+							<td>출발 지원</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptDM"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptDM"><option>메인</option></select>
+								</div></form>
+							</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptDS"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptDS"><option>서브</option></select>
+								</div></form>
+							</td>
+						</tr>
+						<tr>
+							<td>도착 지원</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptAM"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptAM"><option>메인</option></select>
+								</div></form>
+							</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptAS"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptAS"><option>서브</option></select>
+								</div></form>
+							</td>
+						</tr>
+						<tr>
+							<td>탑승 지원</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptBM"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptBM"><option>메인</option></select>
+								</div></form>
+							</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptBS"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptBS"><option>서브</option></select>
+								</div></form>
+							</td>
+						</tr>
+					</table>
+					<table class="table table-bordered">
+						<tr>
+							<td>
+								<form class="form-inline">
+									<div class="form-group">
+										<label>주기장 : </label>(출발 - 도착 - 토잉)
+										<input type="text" class="form-control input-sm" id="gate_from" placeholder="출발게이트" readonly style="width:80px">
+										<input type="text" class="form-control input-sm" id="gate_to" placeholder="도착게이트" readonly style="width:80px">
+										<input type="text" class="form-control input-sm" id="gate_tmp" placeholder="토잉" style="width:80px">
+									</div>
+								</form>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<form class="form-inline">
+									<div class="form-group">
+										<label for="main_chk">도착후 주요정비 :</label>
+										<select class="form-control input-sm" id="main_chk">
+											<option>DAY CHK</option>
+										</select>
+									</div>
+								</form>
+							</td>
+						</tr>
+						<tr>
+							<td><label for="comment">Comment</label>
+									<textarea class="form-control" id="flt_msg" rows="3"></textarea>
+							</td>
+						</tr>
+				</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" id='btn_save' class="btn btn-primary">Summit</button>
+					<button type="button" id='btn_close' class="btn btn-default" data-dismiss="modal">Cancel</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="container-fluid">
 	<% include ./menu.ejs %>
 	<!-- <div id="controls" class="navbar-form navbar-static-top"> -->
-	<div id="controls" class="masthead clearfix">
-		<label class="control-label">Date</label>
+	<div id="controls" class="form-group form-inline">
+		<label for="log_date">Date</label>
 		<input type="date" id="log_date" name="log_date">
-		<label class="control-label">Station</label>
+		<label for="station">Station</label>
 		<select id="station" name="station"></select>
 		<button id="show_list" disabled=true class="btn btn-primary btn-sm navbar-btn">show</button>
 		<!--
@@ -110,119 +218,14 @@
 		<button id="gate_list" disabled=true class="btn btn-primary btn-sm navbar-btn">gate</button>
 		-->
 	</div>
-</div>
 <!-- <div id="flight_board" class="container-fluid" style="overflow:scroll;height:600px"> -->
 <div id="flight_board" class="container-fluid">
 	<svg></svg>
 </div>
+</div>
+
 <div id="flight_info" class="info_hidden"></div>
 <div id="tooltip_div" class="tooltip" style="opacity: 0;"></div>
-<!-- modal -->
-<div class="modal fade" id='flt_modal' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title"><span class="glyphicon glyphicon-star" aria-hidden="true"></span>Flight Detail Infomation!</h4>
-		</div>
-		<div class="modal-body">
-			<div class="form-inline">
-					<label>Flight Info: </label>
-					<span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-					<label id="FlightNumber"></label>
-					<label id="Route"></label>
-					<span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-					<label id="StardardTime"></label>
-			</div>
-			<table class="table table-bordered">
-				<tr class='active'>
-					<th width="80">정비 지원</th><th>메인</th><th>서브</th>
-				</tr>
-				<tr>
-					<td>출발 지원</td>
-					<td>
-						<form class="form-inline"><div class="form-group">
-						<select class="form-control input-sm" id="key_deptDM"><option>부서</option></select>
-						<select class="form-control input-sm" id="sel_deptDM"><option>메인</option></select>
-						</div></form>
-					</td>
-					<td>
-						<form class="form-inline"><div class="form-group">
-						<select class="form-control input-sm" id="key_deptDS"><option>부서</option></select>
-						<select class="form-control input-sm" id="sel_deptDS"><option>서브</option></select>
-						</div></form>
-					</td>
-				</tr>
-				<tr>
-					<td>도착 지원</td>
-					<td>
-						<form class="form-inline"><div class="form-group">
-						<select class="form-control input-sm" id="key_deptAM"><option>부서</option></select>
-						<select class="form-control input-sm" id="sel_deptAM"><option>메인</option></select>
-						</div></form>
-					</td>
-					<td>
-						<form class="form-inline"><div class="form-group">
-						<select class="form-control input-sm" id="key_deptAS"><option>부서</option></select>
-						<select class="form-control input-sm" id="sel_deptAS"><option>서브</option></select>
-						</div></form>
-					</td>
-				</tr>
-				<tr>
-					<td>탑승 지원</td>
-					<td>
-						<form class="form-inline"><div class="form-group">
-						<select class="form-control input-sm" id="key_deptBM"><option>부서</option></select>
-						<select class="form-control input-sm" id="sel_deptBM"><option>메인</option></select>
-						</div></form>
-					</td>
-					<td>
-						<form class="form-inline"><div class="form-group">
-						<select class="form-control input-sm" id="key_deptBS"><option>부서</option></select>
-						<select class="form-control input-sm" id="sel_deptBS"><option>서브</option></select>
-						</div></form>
-					</td>
-				</tr>
-			</table>
-			<table class="table table-bordered">
-				<tr>
-					<td>
-						<form class="form-inline">
-							<div class="form-group">
-								<label>주기장 : </label>(출발 - 도착 - 토잉)
-								<input type="text" class="form-control input-sm" id="gate_from" placeholder="출발게이트" readonly style="width:80px">
-								<input type="text" class="form-control input-sm" id="gate_to" placeholder="도착게이트" readonly style="width:80px">
-								<input type="text" class="form-control input-sm" id="gate_tmp" placeholder="토잉" style="width:80px">
-							</div>
-						</form>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<form class="form-inline">
-							<div class="form-group">
-								<label for="main_chk">도착후 주요정비 :</label>
-								<select class="form-control input-sm" id="main_chk">
-									<option>DAY CHK</option>
-								</select>
-							</div>
-						</form>
-					</td>
-				</tr>
-				<tr>
-					<td><label for="comment">Comment</label>
-							<textarea class="form-control" id="flt_msg" rows="3"></textarea>
-					</td>
-				</tr>
-		</table>
-		</div>
-		<div class="modal-footer">
-			<button type="button" id='btn_save' class="btn btn-primary">Summit</button>
-			<button type="button" id='btn_close' class="btn btn-default" data-dismiss="modal">Cancel</button>
-		</div>
-	</div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
 <script>
 //event binding
 $('#flt_modal #key_deptDM').on("change",()=>{

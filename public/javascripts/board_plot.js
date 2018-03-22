@@ -52,6 +52,8 @@ function flight_board(){
 
 // draw board
 function draw_plot(sel_date,sel_station,draw_data){
+  console.log('draw_plot');
+  //console.log(draw_data);
     // https://github.com/wbkd/d3-extended
     d3.selection.prototype.moveToFront = function() {  
       return this.each(function(){
@@ -176,7 +178,12 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','middle')
       .attr("id","FlightNumber_"+d.FlightNumber).attr("font-size",box_w>100?"28":"19")
       //mouse click event
-      .on('dblclick',show_flt_modal)
+      .on('click',show_flt_modal);
+      //.on('dblclick',show_flt_modal);
+      //.on('click',show_worker);
+    draw_text(box_g,2,box_h-5,d.RouteFrom)
+      .attr('text-anchor','start')
+      .attr("id","RouteFrom").attr("font-size","14")
       .on('mouseover',(d)=>{
         var sel_geneva = filter_geneva(d);
         //console.log(sel_geneva);
@@ -186,10 +193,6 @@ function draw_plot(sel_date,sel_station,draw_data){
           bubble_show(d3.event.pageX+20,d3.event.pageY-60,show_msg(msg.join('<br>')));
         }
       }).on('mouseout',(d)=>{bubble_hide();});
-      //.on('click',show_worker);
-    draw_text(box_g,2,box_h-5,d.RouteFrom)
-      .attr('text-anchor','start')
-      .attr("id","RouteFrom").attr("font-size","14");
     draw_text(box_g,box_w-2,box_h-5,d.RouteTo)//2+box_w-33
       .attr('text-anchor','end')
       .attr("id","RouteTo").attr("font-size","14");
@@ -268,7 +271,7 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr("fill","darkred").attr("opacity",0.9);
     // 게이트 번호 표시
     var gate_g = box_g.append('g').attr('id','flt_'+d.FlightNumber)
-    draw_text(gate_g,-1,box_h-5,"")
+    draw_text(gate_g,-1,box_h/4-2,"")
       .attr('text-anchor','end')
       .attr("id","GateFrom")
       .attr('gate_num','')

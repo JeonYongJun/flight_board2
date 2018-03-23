@@ -28,7 +28,7 @@ router.get('/:date/:station', function(req, res, next) {
       FROM FlightPlan AS pln, FlightSchedule AS sch
       WHERE  pln.FlightKey = sch.FlightKey
           AND ( pln.StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR pln.StandardTimeArrival BETWEEN @FromDate AND @ToDate)
-          AND ( pln.RouteFrom = @Station OR pln.RouteTo = @Station )) as data
+          AND ( pln.RouteFrom = @Station OR pln.RouteTo = @Station ) AND pln.USED = 'Y') as data
       LEFT OUTER JOIN FlightPlotEmployee AS emp
       ON data.FlightPlanID = emp.FlightPlanId AND emp.Used = 'Y'`;
 
@@ -64,7 +64,8 @@ router.get('/:date/:station', function(req, res, next) {
           pln.RouteFrom, pln.RouteTo
       FROM FlightPlan AS pln, FlightSchedule AS sch
       WHERE  pln.FlightKey = sch.FlightKey
-          AND ( pln.StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR pln.StandardTimeArrival BETWEEN @FromDate AND @ToDate)) as data
+          AND ( pln.StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR pln.StandardTimeArrival BETWEEN @FromDate AND @ToDate)
+          AND pln.USED = 'Y') as data
       LEFT OUTER JOIN FlightPlotEmployee AS emp
       ON data.FlightPlanID = emp.FlightPlanId AND emp.Used = 'Y'`;
 

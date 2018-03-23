@@ -88,7 +88,7 @@ router.get('/workers/:date/:station',function(req,res,next){
     AND ( RouteFrom = @Station OR RouteTo = @Station )
     AND p.FlightPlanID = e.FlightPlanID
     AND e.EmpCode = em.EmpCode
-    AND e.Used = 'Y'
+    AND p.Used = 'Y' AND e.Used = 'Y'
     ORDER BY FlightKey ASC`
   if(port == 'ALL'){
     query = `DECLARE @SelFromDate DATETIME SET @SelFromDate = '${date1} 04:00:00.000';
@@ -102,7 +102,7 @@ router.get('/workers/:date/:station',function(req,res,next){
       ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
       AND p.FlightPlanID = e.FlightPlanID
       AND e.EmpCode = em.EmpCode
-      AND e.Used = 'Y'
+      AND p.Used = 'Y' AND e.Used = 'Y'
       ORDER BY FlightKey ASC`
   }
   console.log(query);

@@ -34,7 +34,7 @@ router.get('/plan/:date/:station', function(req, res, next) {
     DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeArrival) ) AS StandardTimeArrival
     FROM FlightPlan
     WHERE ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
-    AND ( RouteFrom = @Station OR RouteTo = @Station )
+    AND ( RouteFrom = @Station OR RouteTo = @Station ) AND USED = 'Y'
     ORDER BY FlightKey ASC`;
   if(port == 'ALL'){
     query = `DECLARE @SelFromDate DATETIME SET @SelFromDate = '${date1} 04:00:00.000';
@@ -50,7 +50,8 @@ router.get('/plan/:date/:station', function(req, res, next) {
     DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeArrival) ) AS StandardTimeArrival
     FROM FlightPlan
     WHERE ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
-            ORDER BY FlightKey ASC`;
+    AND USED = 'Y'
+    ORDER BY FlightKey ASC`;
   }
 
   console.log(query);

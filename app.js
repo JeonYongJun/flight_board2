@@ -51,6 +51,7 @@ var job_depts = require('./routes/job_depts');
 var code_info = require('./routes/code_info');
 var geneva = require('./routes/geneva');
 var report = require('./routes/report');
+var nrc_info = require('./routes/nrc_info');
 //var static = require('./routes/static');
 
 app.use('/', index);
@@ -63,6 +64,7 @@ app.use('/depts',job_depts);
 app.use('/code',code_info);
 app.use('/geneva',geneva);
 app.use('/flight_report',report);
+app.use('/nrc_info',nrc_info);
 //app.use('/static',static);
 
 // catch 404 and forward to error handler

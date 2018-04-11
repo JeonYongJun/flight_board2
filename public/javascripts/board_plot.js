@@ -164,6 +164,7 @@ function draw_plot(sel_date,sel_station,draw_data){
     box_g.on("mouseover",function(){
       d3.select(this).moveToFront();
     });
+    box_g.append("g").attr("id",'key_'+d.FlightKey);
 
     // 정보 출력
     // 1. flight mumber 가운데 출력
@@ -338,7 +339,53 @@ function draw_plot(sel_date,sel_station,draw_data){
   // update schedule,gate num
   show_update_schedule();
   show_gate_num();
+  //show_nrc_info();
 }
+//show nrc info
+var nrc_data = null;
+function show_nrc_info(){
+  var json_url = '/nrc_info/';
+  d3.json(json_url,(err,data)=>{
+    //console.log(data);
+    if(err){
+      console.log(err);
+      //console.log(data);
+      alert('Server Internal Error, please email to system administrator!');
+    }else{
+      //console.log(data);
+      if(data.result == 1){
+        var nrc_body = "";
+        nrc_data = data.data.recordset;
+        data.data.recordset.sort((a,b)=>{
+          if(a.ACNumber < b.ACNumber){ return -1;
+          }else if(a.ACNumber == b.ACNumber && a.DueDate < b.DueDate){ return -1;
+          }else if(a.ACNumber == b.ACNumber && a.DueDate == b.DueDate){ return 0;
+          }else{ return 1;
+          }
+        });
+        data.data.recordset.forEach((e)=>{
+          nrc_body += `<tr><td>${e.ACNumber}</td>
+              <td>${e.TaskNumber}</td><td>${e.DeferType}-${e.DefCategory}-${e.DeferReason}</td>
+              <td>${e.ATAChapterCode}</td><td>${e.DueDate}</td></tr>`;
+        });
+        nrc_body = `<table class="table table-condense table-striped table-hover">
+          <tbody><tr><th>A/C#</th><th>T/C#</th><th>Defer</th><th>ATA</th><th>DueDate</th></tr>
+          ${nrc_body}
+          </tbody></table>`;
+        if(d3.select('#nrc_info').node() == null){
+          nrc_body = `<div id="nrc_info" style="opacity: 1; position:fixed;top:130px;left:1520px;font-size:0.8em;overflow:scroll;width:350px;height:500px">
+            ${nrc_body}
+          </div>`;
+          d3.select('#flight_board').html(d3.select('#flight_board').html()+nrc_body); 
+        }else{
+          d3.select('#nrc_info').html(nrc_body); 
+        }
+      }
+
+    }
+  });
+}
+
 // show update schedule
 function show_update_schedule(){
   var sel_date = d3.select('#log_date').property('value');
@@ -349,22 +396,24 @@ function show_update_schedule(){
     if(err){
       console.log(err);
       //console.log(data);
-      alert('Server Internal Error, please email to system administrator!')
+      alert('Server Internal Error, please email to system administrator!');
     }else{
       //update
       if(data.result == 1){
         data.schedule.recordset.forEach((e)=>{
           //console.log('#'+e.ACNumber+'_'+e.FlightNumber,e.RampOut.slice(11,16));
+          //console.log('FlightKey : '+e.FlightKey);
+          var flight_node = d3.select(d3.select('#key_'+e.FlightKey).node().parentNode);
           // RampOut
-          d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
-            .select('#sch_start_time').text(e.RampOut.slice(11,16));
-          d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
-            .select('#sch_end_time').text(e.RampIn.slice(11,16));
+          //d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
+          flight_node.select('#sch_start_time').text(e.RampOut.slice(11,16));
+          //d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
+          flight_node.select('#sch_end_time').text(e.RampIn.slice(11,16));
           // 위치 조정
           //console.log(e.RampOut,rtime_to_postion(e.RampOut));
           //console.log(e.ACNumber,acnumber_to_postion(e.ACNumber))
-          d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
-            .transition()
+          //d3.select('#'+e.ACNumber+'_'+e.FlightNumber)
+          flight_node.transition()
             .attr("transform","translate("+rtime_to_postion(e.RampOut)+","+(acnumber_to_postion(e.ACNumber)-box_h)+")");
         });
       }

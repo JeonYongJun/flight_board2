@@ -30,8 +30,10 @@ router.get('/plan/:date/:station', function(req, res, next) {
     dbo.FN_GET_AC_NUMBERID(ACNumber) AS ACNumberID,
     CONVERT( VARCHAR(10), DATEADD(HH, @UTCValue, CONVERT(DATETIME, LogDate) ), 121) AS LogDate,
     FlightNumber, RouteFrom, RouteTo,
-    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeDeparture) ) AS StandardTimeDeparture,
-    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeArrival) ) AS StandardTimeArrival
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeDeparture) ) AS StandardTimeDeparture_1,
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeArrival) ) AS StandardTimeArrival_1,
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, EstimateTimeDeparture) ) AS StandardTimeDeparture,
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, EstimateTimeArrival) ) AS StandardTimeArrival
     FROM FlightPlan
     WHERE ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
     AND ( RouteFrom = @Station OR RouteTo = @Station ) AND USED = 'Y'
@@ -46,8 +48,10 @@ router.get('/plan/:date/:station', function(req, res, next) {
     dbo.FN_GET_AC_NUMBERID(ACNumber) AS ACNumberID,
     CONVERT( VARCHAR(10), DATEADD(HH, @UTCValue, CONVERT(DATETIME, LogDate) ), 121) AS LogDate,
     FlightNumber, RouteFrom, RouteTo,
-    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeDeparture) ) AS StandardTimeDeparture,
-    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeArrival) ) AS StandardTimeArrival
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeDeparture) ) AS StandardTimeDeparture_1,
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, StandardTimeArrival) ) AS StandardTimeArrival_1,
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, EstimateTimeDeparture) ) AS StandardTimeDeparture,
+    DATEADD(HH, @UTCValue, CONVERT(DATETIME, EstimateTimeArrival) ) AS StandardTimeArrival
     FROM FlightPlan
     WHERE ( StandardTimeDeparture BETWEEN @FromDate AND @ToDate OR StandardTimeArrival BETWEEN @FromDate AND @ToDate)
     AND USED = 'Y'

@@ -17,7 +17,8 @@ function check_route(from,to){
 // Check LOV Code
 let check_lov = new function(){
   this.lov_code = [
-      [0,'DAY CHK'],      [1,'INT CHK'],
+      [0,'Day CHK'],      [8,'Calendar CHK'],
+      [1,'INT CHK'],
       [2,'PHS CHK'],      [3,'BASE CHK'],
       [4,'ENG Change'],   [5,'APU Change'],
       [6,'AD/SB'],        [7,'Special CHK'],

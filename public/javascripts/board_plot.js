@@ -1,7 +1,7 @@
 // init value
-var svg_w = 1500;//board size
+var svg_w = 1800;//board size
 var svg_h_unit = 30;//adjust board height
-var pad_left = 80, pad_right = 30, pad_top = 30, pad_bottom = 30;
+var pad_left = 80, pad_right = 250, pad_top = 30, pad_bottom = 30;
 var box_h = 55;
 var box_min = 70; // min width of box
 var msg_mark = '@';//text icon
@@ -30,10 +30,10 @@ function select_event(){
   d3.json(json_url,function(err,data){
     if(err){
       console.log(err);
-      console.log(data);
+      //console.log(data);
       alert('Server Internal Error, please email to system administrator!')
     }else{
-      console.log(data.plan);
+      //console.log(data.plan);
       plot_data = data.plan;
       draw_plot(sel_date,data.plan);
     }
@@ -53,6 +53,19 @@ function flight_board(){
 // draw board
 function draw_plot(sel_date,sel_station,draw_data){
   console.log('draw_plot');
+  // check sel_station => set xscale_start, xscale_end
+  // ALL,ICN => 
+  //console.log(sel_station);
+  if(['CJU','KUV','GMP'].indexOf(sel_station) >= 0){
+    xscale_start = '06:00';
+    xscale_end = '24:00';
+    xscale_ticks = 18;
+  }else{
+    xscale_start = '04:00';
+    xscale_end = '29:00';
+    xscale_ticks = 28;
+  }
+  
   //console.log(draw_data);
     // https://github.com/wbkd/d3-extended
     d3.selection.prototype.moveToFront = function() {  
@@ -72,7 +85,7 @@ function draw_plot(sel_date,sel_station,draw_data){
   var hl_set = new Set();
   draw_data.forEach(function(d){
     //ACNumber != null and ACNumber.length != 0
-    console.log(d.ACNumber);
+    //console.log(d.ACNumber);
     if(d.ACNumber != null && d.ACNumber.length > 0){
       hl_set.add(d.ACNumber);
     }
@@ -101,7 +114,7 @@ function draw_plot(sel_date,sel_station,draw_data){
   svg.append("g").attr("id","y_axis")
     .attr("transform","translate("+pad_left+","+0+")").call(y_axis);
   // HLNumber 표시
-  //var hl_map = {};
+  hl_map = {};
   var i = 1;
   Array.from(hl_set).sort().forEach(function(d){
     let hl_g = svg.append("g").attr('id',d);
@@ -276,11 +289,13 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','end')
       .attr("id","GateFrom")
       .attr('gate_num','')
+      .attr('manual_num','')
       .attr("font-size","13");
     draw_text(gate_g,box_w+1,box_h-5,"")
       .attr('text-anchor','start')
       .attr("id","GateTo")
       .attr('gate_num','')
+      .attr('manual_num','')
       .attr("font-size","13");
     draw_text(gate_g,box_w+1,box_h+7,"")
     .attr('text-anchor','start')
@@ -292,6 +307,7 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','start')
       .attr("id","GateTmp")
       .attr('gate_num','')
+      .attr('manual_num','')
       .attr("font-size","13");
 
   });
@@ -320,6 +336,10 @@ function draw_plot(sel_date,sel_station,draw_data){
       }
     });
   });
+  // update schedule,gate num
+  show_update_schedule();
+  show_gate_num();
+
   // 입력된 메시지 정보 읽어소 표시
   d3.json('/job_descs/'+sel_date+'/'+sel_station,(err,data)=>{
     data.recordset.recordset.forEach((d)=>{
@@ -331,19 +351,27 @@ function draw_plot(sel_date,sel_station,draw_data){
       }else if(d.OperationType == 'C'){//LOV check
         sel_parent.attr('daily_check','true');
         show_lov_check(sel_parent,d.Remarks);
-      }else if(d.OperationType == 'G' && d.Remarks != ''){//Gate Tmp
-        sel_parent.select('#GateTmp').attr('gate_num',d.Remarks).text('('+d.Remarks+')');
+      }else if(d.OperationType == 'GF' && d.Remarks != ''){//Gate From
+        sel_parent.select('#GateFrom').attr('manual_num',d.Remarks).text(d.Remarks+'-');
+      }else if(d.OperationType == 'GT' && d.Remarks != ''){//Gate To
+        //console.log('Gate to : '+d.Remarks+'/')
+        sel_parent.select('#GateTo').attr('manual_num',d.Remarks).text('-'+d.Remarks);
+      }else if(d.OperationType == 'GG' && d.Remarks != ''){//Gate Tmp
+        sel_parent.select('#GateTmp').attr('manual_num',d.Remarks).text('('+d.Remarks+')');
       }
     });
   });
-  // update schedule,gate num
-  show_update_schedule();
-  show_gate_num();
+
+  // deffer info
   //show_nrc_info();
 }
 //show nrc info
 var nrc_data = null;
 function show_nrc_info(){
+  // create nrc info group
+  var nrc_g = d3.select('svg').append('g').attr('id','nrc_g')
+    .attr("transform", "translate(" + (svg_w - pad_right + 10) + "," + pad_top + ")");
+
   var json_url = '/nrc_info/';
   d3.json(json_url,(err,data)=>{
     //console.log(data);
@@ -363,23 +391,53 @@ function show_nrc_info(){
           }else{ return 1;
           }
         });
-        data.data.recordset.forEach((e)=>{
-          nrc_body += `<tr><td>${e.ACNumber}</td>
-              <td>${e.TaskNumber}</td><td>${e.DeferType}-${e.DefCategory}-${e.DeferReason}</td>
-              <td>${e.ATAChapterCode}</td><td>${e.DueDate}</td></tr>`;
-        });
-        nrc_body = `<table class="table table-condense table-striped table-hover">
-          <tbody><tr><th>A/C#</th><th>T/C#</th><th>Defer</th><th>ATA</th><th>DueDate</th></tr>
-          ${nrc_body}
-          </tbody></table>`;
-        if(d3.select('#nrc_info').node() == null){
-          nrc_body = `<div id="nrc_info" style="opacity: 1; position:fixed;top:130px;left:1520px;font-size:0.8em;overflow:scroll;width:350px;height:500px">
-            ${nrc_body}
-          </div>`;
-          d3.select('#flight_board').html(d3.select('#flight_board').html()+nrc_body); 
-        }else{
-          d3.select('#nrc_info').html(nrc_body); 
+        //drew head
+        draw_text(nrc_g,5,1,'TASK#')
+        .attr('text-anchor','left').style('fill',color).attr("font-size","12");
+        draw_text(nrc_g,70,1,'DEF Type')
+          .attr('text-anchor','left').style('fill',color).attr("font-size","12");
+        draw_text(nrc_g,140,1,'ATA')
+        .attr('text-anchor','left').style('fill',color).attr("font-size","12");
+        draw_text(nrc_g,180,1,'DUE')
+        .attr('text-anchor','left').style('fill',color).attr("font-size","12");
+
+        // draw data
+        var color = 'darkred';
+        for(k in hl_map){
+          var sel_data = nrc_data.filter(e => { return e.ACNumber == k });
+          sel_data.forEach((e,i) => {
+            if(i < 4){
+              var nrc_y = y_scale(hl_map[k])-(svg_h_unit+box_h)*(5-i)/5;
+              draw_text(nrc_g,1,nrc_y,e.TaskNumber)
+              .attr('text-anchor','left').style('fill',color).attr("font-size","13");
+              draw_text(nrc_g,70,nrc_y,e.DeferType+'-'+e.DefCategory+'-'+e.DeferReason)
+                .attr('text-anchor','left').style('fill',color).attr("font-size","13");
+              draw_text(nrc_g,140,nrc_y,e.ATAChapterCode)
+              .attr('text-anchor','left').style('fill',color).attr("font-size","13");
+              draw_text(nrc_g,180,nrc_y,e.DueDate)
+              .attr('text-anchor','left').style('fill',color).attr("font-size","13");
+            }
+          });
+          //console.log(sel_data);
+          color = color == 'darkred'?'darkblue':'darkred';
         }
+        // data.data.recordset.forEach((e)=>{
+        //   nrc_body += `<tr><td>${e.ACNumber}</td>
+        //       <td>${e.TaskNumber}</td><td>${e.DeferType}-${e.DefCategory}-${e.DeferReason}</td>
+        //       <td>${e.ATAChapterCode}</td><td>${e.DueDate}</td></tr>`;
+        // });
+        // nrc_body = `<table class="table table-condense table-striped table-hover">
+        //   <tbody><tr><th>A/C#</th><th>T/C#</th><th>Defer</th><th>ATA</th><th>DueDate</th></tr>
+        //   ${nrc_body}
+        //   </tbody></table>`;
+        // if(d3.select('#nrc_info').node() == null){
+        //   nrc_body = `<div id="nrc_info" style="opacity: 1; position:fixed;top:130px;left:1520px;font-size:0.8em;overflow:scroll;width:350px;height:500px">
+        //     ${nrc_body}
+        //   </div>`;
+        //   //d3.select('#flight_board').html(d3.select('#flight_board').html()+nrc_body); 
+        // }else{
+        //   //d3.select('#nrc_info').html(nrc_body); 
+        //}
       }
 
     }
@@ -445,6 +503,25 @@ function show_gate_num(){
       }
     });
   });
+}
+
+function set_gate_num(gate_g,gate_id,tp){
+  console.log('set_gate_num');
+  //tp GF(FROM) GT(TO) GG(TMP)
+  var gate_num = gate_g.select(gate_id).attr('manual_num');
+  console.log('1'+gate_num);
+  gate_num = gate_num != ''?gate_num:gate_g.select(gate_id).attr('gate_num');
+  if(gate_num == ''){
+    gate_num = '';
+  }else if(tp == 'GF'){
+    gate_num = gate_num + '-';
+  }else if(tp == 'GT'){
+    gate_num = '-' + gate_num;
+  }else{
+    gate_num = '(' + gate_num + ')';
+  }
+  console.log('2'+gate_num);
+  gate_g.select(gate_id).text(gate_num);
 }
 
 // show worker detail information
@@ -552,20 +629,27 @@ function save_lov_check(parent,lov){
  }
 }
 // save gate tmp
-function save_gate_tmp(parent,gate_num){
+function save_gate_manual(parent,gate_num,tp){
   console.log('save_gate_tmp');
   console.log(gate_num);
-  if(gate_num != null && gate_num != ''){
+  if(tp=='GT'){
+    parent.select('#GateTo').attr('manual_num',gate_num);
+  }else if(tp == 'GF'){
+    parent.select('#GateFrom').attr('manual_num',gate_num);
+  }else{
+    parent.select('#GateTmp').attr('manual_num',gate_num);
+  }
+  if(gate_num != null){// && gate_num != ''){
     let p_data = parent.data()[0];
     let save_data = {
       FlightPlanID:p_data.FlightPlanID,
       ACNumber:p_data.ACNumber,
-      OperationType:'G',// gate temp type
+      OperationType:tp,// GF-gate from, GT-gate to, GG-gate tmp
       Remarks: gate_num,
       Used:'Y'
     };
-    console.log(parent.data());
-    console.log(save_data);
+    //console.log(parent.data());
+    //console.log(save_data);
     d3.json('/job_descs/daily_check',function(error, data) {
       //console.log(data);
       //처리 결과를 화면에 재정리
@@ -669,7 +753,9 @@ function show_flt_modal(d){
     //gate
     $('#flt_modal #gate_from').val(selected_box.select('#GateFrom').attr('gate_num'));
     $('#flt_modal #gate_to').val(selected_box.select('#GateTo').attr('gate_num'));
-    $('#flt_modal #gate_tmp').val(selected_box.select('#GateTmp').attr('gate_num'));
+    $('#flt_modal #mgate_from').val(selected_box.select('#GateFrom').attr('manual_num'));
+    $('#flt_modal #mgate_to').val(selected_box.select('#GateTo').attr('manual_num'));
+    $('#flt_modal #mgate_tmp').val(selected_box.select('#GateTmp').attr('manual_num'));
 
     //show
     $('#flt_modal').modal('show');

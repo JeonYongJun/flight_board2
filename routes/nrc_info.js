@@ -8,7 +8,8 @@ var connection = require('./db/connection');
 */
 router.get('/', function(req, res, next) {
   console.log('/nrc_info',req.params);
-  var query = `SELECT d.ACNumberID, d.ACNumber, b.DeferType, b.DefCategory, b.DeferReason, b.ATAChapterCode, b.DueDate
+  var query = `SELECT d.ACNumberID, d.ACNumber, b.DeferType, b.DefCategory, ISNULL(b.DeferReason,'') DeferReason,
+    b.ATAChapterCode, b.DueDate
     ,CASE WHEN ISNULL(b.LogNumber, '') = ''
          THEN CAST(c.NRCID AS NVARCHAR(20) )
          ELSE b.LogNumber + '-' + b.LogItemNumber

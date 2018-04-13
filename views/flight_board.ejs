@@ -171,10 +171,17 @@
 							<td>
 								<form class="form-inline">
 									<div class="form-group">
-										<label>주기장 : </label>(출발 - 도착 - 토잉)
+										<label>주 기 장 : </label>(공사 : 출발 - 도착 )
 										<input type="text" class="form-control input-sm" id="gate_from" placeholder="출발게이트" readonly style="width:80px">
 										<input type="text" class="form-control input-sm" id="gate_to" placeholder="도착게이트" readonly style="width:80px">
-										<input type="text" class="form-control input-sm" id="gate_tmp" placeholder="토잉" style="width:80px">
+									</div>
+								</form>
+								<form class="form-inline">
+									<div class="form-group">
+										<label>Manual : </label>(출발 - 도착 - 토잉 )
+										<input type="text" class="form-control input-sm" id="mgate_from" placeholder="출발게이트" style="width:80px">
+										<input type="text" class="form-control input-sm" id="mgate_to" placeholder="도착게이트" style="width:80px">
+										<input type="text" class="form-control input-sm" id="mgate_tmp" placeholder="토잉" style="width:80px">
 									</div>
 								</form>
 							</td>
@@ -267,14 +274,29 @@ $('#flt_modal #btn_save').on('click',(e)=>{
 	selected_box.select('#workerB').attr('sub_empcd',$('#flt_modal #sel_deptBS').val()).attr('sub_empnm',$('#flt_modal #sel_deptBS option:selected').text());
 	save_workers(selected_box);
 
-	// 2. 주기장
-	var gate_num = $('#flt_modal #gate_tmp').val();
+	// 2. 주기장(메뉴얼 from to tmp)
+	var gate_num = $('#flt_modal #mgate_from').val();
 	gate_num = gate_num.trim();
-	var gate_txt = gate_num?'('+gate_num+')':''
+	var gate_txt = gate_num?gate_num+'-':''
+	{
+		save_gate_manual(selected_box,gate_num,'GF');
+		set_gate_num(selected_box,'#GateFrom','GF')
+	}
+	gate_num = $('#flt_modal #mgate_to').val();
+	gate_num = gate_num.trim();
+	gate_txt = gate_num?'-'+gate_num:''
 	//if(gate_num != '')
 	{
-		selected_box.select('#GateTmp').attr('gate_num',gate_num).text(gate_txt);
-		save_gate_tmp(selected_box,gate_num)
+		save_gate_manual(selected_box,gate_num,'GT')
+		set_gate_num(selected_box,'#GateTo','GT')
+	}
+	gate_num = $('#flt_modal #mgate_tmp').val();
+	gate_num = gate_num.trim();
+	gate_txt = gate_num?'('+gate_num+')':''
+	//if(gate_num != '')
+	{
+		save_gate_manual(selected_box,gate_num,'GG')
+		set_gate_num(selected_box,'#GateTmp','GG')
 	}
 
 	// 3. 주요 정비

@@ -1,9 +1,9 @@
 // init value
-var svg_w = 1750;//board size
+var svg_w = 1800;//board size
 var svg_h_unit = 30;//adjust board height
 var pad_left = 80, pad_right = 250, pad_top = 30, pad_bottom = 30;
 var box_h = 55;
-var box_min = 68; // min width of box
+var box_min = 70; // min width of box
 var msg_mark = '@';//text icon
 
 // time scale

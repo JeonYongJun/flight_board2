@@ -1,9 +1,9 @@
 // init value
-var svg_w = 1800;//board size
+var svg_w = 1750;//board size
 var svg_h_unit = 30;//adjust board height
 var pad_left = 80, pad_right = 250, pad_top = 30, pad_bottom = 30;
 var box_h = 55;
-var box_min = 70; // min width of box
+var box_min = 68; // min width of box
 var msg_mark = '@';//text icon
 
 // time scale
@@ -119,7 +119,7 @@ function draw_plot(sel_date,sel_station,draw_data){
   Array.from(hl_set).sort().forEach(function(d){
     let hl_g = svg.append("g").attr('id',d);
     draw_text(hl_g,0,y_scale(i)-box_h/2,d)
-      .attr('id','ACNumber').attr("font-size",20);
+      .attr('id','ACNumber').attr("font-size",18);
     //Flight Detail info : ACModel, ACSerialNumber
     draw_text(hl_g,0,y_scale(i)-box_h/2+12,'EffectivityIPC')
       .attr('id','EffectivityIPC').attr("font-size",14);
@@ -219,7 +219,7 @@ function draw_plot(sel_date,sel_station,draw_data){
     // 작업자 3명 표시 - 보내는자(D), 받는자(A), 탑승지원(B)
     draw_text(box_g,box_w/2,-10,'',cls='worker_text').attr("id","workerB")//worker
     .attr('text-anchor','middle')
-    .attr("font-size","14").attr("font-weight","10")
+    .attr("font-size","12").attr("font-weight","10")
     // 작업자 코드, sub 작업자 이름과 코드 설정
     .attr('empcd','').attr('sub_empnm','').attr('sub_empcd','')
     .on('mouseover',(d)=>{//mouse over tooltip
@@ -234,7 +234,7 @@ function draw_plot(sel_date,sel_station,draw_data){
     });
     draw_text(box_g,0,-10,'',cls='worker_text').attr("id","workerD")//worker1
     .attr('text-anchor','middle')
-    .attr("font-size","14").attr("font-weight","10")
+    .attr("font-size","12").attr("font-weight","10")
     // 작업자 코드, sub 작업자 이름과 코드 설정
     .attr('empcd','').attr('sub_empnm','').attr('sub_empcd','')
     .on('mouseover',(d)=>{//mouse over tooltip
@@ -249,7 +249,7 @@ function draw_plot(sel_date,sel_station,draw_data){
     });
     draw_text(box_g,box_w,-10,'',cls='worker_text').attr("id","workerA")//worker2
     .attr('text-anchor','middle')
-    .attr("font-size","14").attr("font-weight","10")
+    .attr("font-size","12").attr("font-weight","10")
     // 작업자 코드, sub 작업자 이름과 코드 설정
     .attr('empcd','').attr('sub_empnm','').attr('sub_empcd','')
     .on('mouseover',(d)=>{//mouse over tooltip
@@ -363,7 +363,7 @@ function draw_plot(sel_date,sel_station,draw_data){
   });
 
   // deffer info
-  //show_nrc_info();
+  show_nrc_info();
 }
 //show nrc info
 var nrc_data = null;

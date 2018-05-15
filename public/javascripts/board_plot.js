@@ -217,46 +217,55 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','end')
       .attr("id","end_time").attr("font-size","12");
     // 작업자 3명 표시 - 보내는자(D), 받는자(A), 탑승지원(B)
-    draw_text(box_g,box_w/2,-10,'',cls='worker_text').attr("id","workerB")//worker
+    draw_text(box_g,box_w/2,-6,'',cls='worker_text').attr("id","workerB")//worker
     .attr('text-anchor','middle')
     .attr("font-size","12").attr("font-weight","10")
     // 작업자 코드, sub 작업자 이름과 코드 설정
-    .attr('empcd','').attr('sub_empnm','').attr('sub_empcd','')
+    .attr('empcd','')
+    .attr('sub_empnm1','').attr('sub_empcd1','')
+    .attr('sub_empnm2','').attr('sub_empcd2','')
+    .attr('sub_empnm3','').attr('sub_empcd3','')
+    .attr('sub_empnm4','').attr('sub_empcd4','')
     .on('mouseover',(d)=>{//mouse over tooltip
       //console.log(d);
       bubble_show(d3.event.pageX + 5,d3.event.pageY - 50,
-        show_emp(d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#workerB').attr('empcd'),
-        d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#workerB').attr('sub_empnm'))
+        show_emp(d3.select('#'+d.ACNumber+'_'+d.FlightNumber),'B')
       );
     }).on("mouseout", function(d) {
       bubble_hide();
        //d3.select('#tooltip_div').transition().duration(500).style("opacity", 0);
     });
-    draw_text(box_g,0,-10,'',cls='worker_text').attr("id","workerD")//worker1
-    .attr('text-anchor','middle')
+    draw_text(box_g,-6,-6,'',cls='worker_text').attr("id","workerD")//worker1
+    .attr('text-anchor','start')
     .attr("font-size","12").attr("font-weight","10")
     // 작업자 코드, sub 작업자 이름과 코드 설정
-    .attr('empcd','').attr('sub_empnm','').attr('sub_empcd','')
+    .attr('empcd','')
+    .attr('sub_empnm1','').attr('sub_empcd1','')
+    .attr('sub_empnm2','').attr('sub_empcd2','')
+    .attr('sub_empnm3','').attr('sub_empcd3','')
+    .attr('sub_empnm4','').attr('sub_empcd4','')
     .on('mouseover',(d)=>{//mouse over tooltip
       //console.log(d);
       bubble_show(d3.event.pageX + 5,d3.event.pageY - 50,
-        show_emp(d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#workerD').attr('empcd'),
-        d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#workerD').attr('sub_empnm'))
+        show_emp(d3.select('#'+d.ACNumber+'_'+d.FlightNumber),'D')
       );
     }).on("mouseout", function(d) {
       bubble_hide();
        //d3.select('#tooltip_div').transition().duration(500).style("opacity", 0);
     });
-    draw_text(box_g,box_w,-10,'',cls='worker_text').attr("id","workerA")//worker2
-    .attr('text-anchor','middle')
+    draw_text(box_g,box_w+6,-6,'',cls='worker_text').attr("id","workerA")//worker2
+    .attr('text-anchor','end')
     .attr("font-size","12").attr("font-weight","10")
     // 작업자 코드, sub 작업자 이름과 코드 설정
-    .attr('empcd','').attr('sub_empnm','').attr('sub_empcd','')
+    .attr('empcd','')
+    .attr('sub_empnm1','').attr('sub_empcd1','')
+    .attr('sub_empnm2','').attr('sub_empcd2','')
+    .attr('sub_empnm3','').attr('sub_empcd3','')
+    .attr('sub_empnm4','').attr('sub_empcd4','')
     .on('mouseover',(d)=>{//mouse over tooltip
       //console.log(d);
       bubble_show(d3.event.pageX + 5,d3.event.pageY - 50,
-        show_emp(d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#workerA').attr('empcd'),
-        d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#workerA').attr('sub_empnm'))
+        show_emp(d3.select('#'+d.ACNumber+'_'+d.FlightNumber),'A')
       );
     }).on("mouseout", function(d) {
       bubble_hide();
@@ -331,8 +340,9 @@ function draw_plot(sel_date,sel_station,draw_data){
       var sel_worker = d3.select('#'+d.ACNumber+'_'+d.FlightNumber).select('#worker'+d.OperationType);
       if(d.ResponsibilityType == 'M'){
         sel_worker.attr('empcd',d.EmpCode).text(d.EmpName);
-      }else if (d.ResponsibilityType == 'S') {
-        sel_worker.attr('sub_empcd',d.EmpCode).attr('sub_empnm',d.EmpName);
+      }else if (d.ResponsibilityType.startsWith('S')) {
+        let _idx = d.ResponsibilityType.charAt(1);
+        sel_worker.attr('sub_empcd'+_idx,d.EmpCode).attr('sub_empnm'+_idx,d.EmpName);
       }
     });
   });
@@ -525,14 +535,22 @@ function set_gate_num(gate_g,gate_id,tp){
 }
 
 // show worker detail information
-function show_emp(id,sub_nm=""){
+function show_emp(_sel_g,_tp){
   //console.log(id);
+    let _id = _sel_g.select('#worker'+_tp).attr('empcd');
+    let _subnm1 = _sel_g.select('#worker'+_tp).attr('sub_empnm1') || '';
+    let _subnm2 = _sel_g.select('#worker'+_tp).attr('sub_empnm2') || '';
+    let _subnm3 = _sel_g.select('#worker'+_tp).attr('sub_empnm3') || '';
+    let _subnm4 = _sel_g.select('#worker'+_tp).attr('sub_empnm4') || '';
     return function(){
-      d3.json('/job_workers/info/'+id,(err,data)=>{
+      d3.json('/job_workers/info/'+_id,(err,data)=>{
         var html = 'Name : '+data.data.recordset[0].EmpName +
-                  '<br/>Email: ' + data.data.recordset[0].eMail +
+                  // '<br/>Email: ' + data.data.recordset[0].eMail +
                   '<br/>Tel : '+ data.data.recordset[0].MobileNo +
-                  '<br/>Sub : '+ sub_nm;
+                  '<br/>Sub1 : '+ _subnm1 +
+                  '<br/>Sub2 : '+ _subnm2 +
+                  '<br/>Sub3 : '+ _subnm3 +
+                  '<br/>Sub4 : '+ _subnm4;
         d3.select('#tooltip_div').html(html);
         //console.log(data.data.recordset);
       });
@@ -542,7 +560,7 @@ function show_emp(id,sub_nm=""){
 }
 // show lov check
 function show_lov_check(parent,lov_msg){
-  console.log(lov_msg);
+  //console.log(lov_msg);
   parent.select('#daily_check').remove();
   if(lov_msg !== ''){
     d3.text('/images/flight3.svg',(d)=>{
@@ -564,20 +582,32 @@ function show_lov_check(parent,lov_msg){
 
 // save workers
 function save_workers(parent){
-  console.log(parent.data());
+  //console.log(parent.data());
   let p_data = parent.data()[0];
   let save_data = {
     FlightPlanID:p_data.FlightPlanID,
     ACNumber:p_data.ACNumber,
     WorkerList:[]
   };
-  save_data.WorkerList.push([parent.select('#workerA').attr('empcd'),'A','M']);
-  save_data.WorkerList.push([parent.select('#workerA').attr('sub_empcd'),'A','S']);
-  save_data.WorkerList.push([parent.select('#workerB').attr('empcd'),'B','M']);
-  save_data.WorkerList.push([parent.select('#workerB').attr('sub_empcd'),'B','S']);
-  save_data.WorkerList.push([parent.select('#workerD').attr('empcd'),'D','M']);
-  save_data.WorkerList.push([parent.select('#workerD').attr('sub_empcd'),'D','S']);
-  console.log(save_data);
+  ['A','D','B'].forEach(tp => {
+    save_data.WorkerList.push([parent.select(`#worker${tp}`).attr('empcd'),tp,'M']);
+    [1,2,3,4].forEach(i => {
+      save_data.WorkerList.push([parent.select(`#worker${tp}`).attr(`sub_empcd${i}`),tp,`S${i}`]);
+    });
+  });
+  // save_data.WorkerList.push([parent.select('#workerA').attr('empcd'),'A','M']);
+  // save_data.WorkerList.push([parent.select('#workerA').attr('sub_empcd1'),'A','S']);
+  // save_data.WorkerList.push([parent.select('#workerA').attr('sub_empcd2'),'A','S']);
+
+  // save_data.WorkerList.push([parent.select('#workerB').attr('empcd'),'B','M']);
+  // save_data.WorkerList.push([parent.select('#workerB').attr('sub_empcd1'),'B','S']);
+  // save_data.WorkerList.push([parent.select('#workerB').attr('sub_empcd2'),'B','S']);
+
+  // save_data.WorkerList.push([parent.select('#workerD').attr('empcd'),'D','M']);
+  // save_data.WorkerList.push([parent.select('#workerD').attr('sub_empcd1'),'D','S']);
+  // save_data.WorkerList.push([parent.select('#workerD').attr('sub_empcd2'),'D','S']);
+
+  //console.log(save_data);
   d3.json('/job_workers/save',function(error, data) {
        //console.log(data);
        //처리 결과를 화면에 재정리
@@ -588,7 +618,7 @@ function save_workers(parent){
 }
 // save descriptions
 function save_descs(parent,msg){
-  console.log(parent.data());
+  //console.log(parent.data());
   let p_data = parent.data()[0];
   let save_data = {
     FlightPlanID:p_data.FlightPlanID,
@@ -597,7 +627,7 @@ function save_descs(parent,msg){
     Remarks:msg,
     Used:'Y'
   };
-  console.log(save_data);
+  //console.log(save_data);
   d3.json('/job_descs/save',function(error, data) {
        //console.log(data);
     })
@@ -606,8 +636,8 @@ function save_descs(parent,msg){
 }
 // save daily check
 function save_lov_check(parent,lov){
-  console.log('save_lov_check');
-  console.log(lov);
+  //console.log('save_lov_check');
+  //console.log(lov);
   if(lov != null){
     //var lov = parent.select('#daily_check').select('#check_txt').attr('lov');
     let p_data = parent.data()[0];
@@ -618,8 +648,8 @@ function save_lov_check(parent,lov){
       Remarks: lov,//check_lov.value(lov),// LOV MSG
       Used:lov === ''?'N':'Y'
     };
-    console.log(parent.data());
-    console.log(save_data);
+    //console.log(parent.data());
+    //console.log(save_data);
     d3.json('/job_descs/daily_check',function(error, data) {
       //console.log(data);
       //처리 결과를 화면에 재정리
@@ -630,8 +660,8 @@ function save_lov_check(parent,lov){
 }
 // save gate tmp
 function save_gate_manual(parent,gate_num,tp){
-  console.log('save_gate_tmp');
-  console.log(gate_num);
+  //console.log('save_gate_tmp');
+  //console.log(gate_num);
   if(tp=='GT'){
     parent.select('#GateTo').attr('manual_num',gate_num);
   }else if(tp == 'GF'){
@@ -669,77 +699,40 @@ function show_flt_modal(d){
   $('#flt_modal #Route').text(`${d.RouteFrom}->${d.RouteTo}`);
   $('#flt_modal #StardardTime').text(`${rtime_to_time(d.StandardTimeArrival)} ~ ${rtime_to_time(d.StandardTimeDeparture)}`);
   
-  selected_box = d3.select('#'+d.ACNumber+'_'+d.FlightNumber);
+  selected_box = d3.select(d3.select('#key_'+d.FlightKey).node().parentNode);
+  // selected_box = d3.select('#'+d.ACNumber+'_'+d.FlightNumber);
   // setup dept
   d3.json('/depts',(err,data)=>{
     //console.log(data.data.recordset);
     recordset = data.data.recordset;
     var dept_codes = filter_depts(recordset);
-    //Departure Worker 
-    var dept_select = d3.select('#flt_modal').select('#key_deptDM');
-    set_select(dept_select,dept_codes);
-    var empcd = selected_box.select('#workerD').attr('empcd');
-    var deptcd = emp_to_dept(recordset,empcd);
-    $('#flt_modal #key_deptDM').val(deptcd);
-    var emp_codes = filter_emps(recordset,deptcd)
-    var emp_select = d3.select('#flt_modal').select('#sel_deptDM');
-    set_select(emp_select,emp_codes);
-    $('#flt_modal #sel_deptDM').val(empcd);
-    //sub는 main과 같은 반으로 움직인다고 가정하고 처리 => 별도 처리 변경(2018-03-15)
-    dept_select = d3.select('#flt_modal').select('#key_deptDS');
-    set_select(dept_select,dept_codes);
-    empcd = selected_box.select('#workerD').attr('sub_empcd');
-    deptcd = emp_to_dept(recordset,empcd);
-    console.log('sub dept : ' + deptcd);
-    $('#flt_modal #key_deptDS').val(deptcd);
-    emp_codes = filter_emps(recordset,deptcd)
-    emp_select = d3.select('#flt_modal').select('#sel_deptDS');
-    set_select(emp_select,emp_codes);
-    $('#flt_modal #sel_deptDS').val(empcd);
-
-    //Arrival Worker
-    dept_select = d3.select('#flt_modal').select('#key_deptAM');
-    set_select(dept_select,dept_codes);
-    empcd = selected_box.select('#workerA').attr('empcd');
-    deptcd = emp_to_dept(recordset,empcd);
-    $('#flt_modal #key_deptAM').val(deptcd);
-    emp_codes = filter_emps(recordset,deptcd)
-    emp_select = d3.select('#flt_modal').select('#sel_deptAM');
-    set_select(emp_select,emp_codes);
-    $('#flt_modal #sel_deptAM').val(empcd);
-    //sub는 main과 같은 반으로 움직인다고 가정하고 처리 => 별도 처리 변경(2018-03-15)
-    dept_select = d3.select('#flt_modal').select('#key_deptAS');
-    set_select(dept_select,dept_codes);
-    empcd = selected_box.select('#workerA').attr('sub_empcd');
-    deptcd = emp_to_dept(recordset,empcd);
-    console.log('sub dept : ' + deptcd);
-    $('#flt_modal #key_deptAS').val(deptcd);
-    emp_codes = filter_emps(recordset,deptcd)
-    emp_select = d3.select('#flt_modal').select('#sel_deptAS');
-    set_select(emp_select,emp_codes);
-    $('#flt_modal #sel_deptAS').val(empcd);
-
-    //Boarding
-    dept_select = d3.select('#flt_modal').select('#key_deptBM');
-    set_select(dept_select,dept_codes);
-    empcd = selected_box.select('#workerB').attr('empcd');
-    deptcd = emp_to_dept(recordset,empcd);
-    $('#flt_modal #key_deptBM').val(deptcd);
-    emp_codes = filter_emps(recordset,deptcd)
-    emp_select = d3.select('#flt_modal').select('#sel_deptBM');
-    set_select(emp_select,emp_codes);
-    $('#flt_modal #sel_deptBM').val(empcd);
-    //sub는 main과 같은 반으로 움직인다고 가정하고 처리 => 별도 처리 변경(2018-03-15)
-    dept_select = d3.select('#flt_modal').select('#key_deptBS');
-    set_select(dept_select,dept_codes);
-    empcd = selected_box.select('#workerB').attr('sub_empcd');
-    deptcd = emp_to_dept(recordset,empcd);
-    console.log('sub dept : ' + deptcd);
-    $('#flt_modal #key_deptBS').val(deptcd);
-    emp_codes = filter_emps(recordset,deptcd)
-    emp_select = d3.select('#flt_modal').select('#sel_deptBS');
-    set_select(emp_select,emp_codes);
-    $('#flt_modal #sel_deptBS').val(empcd);
+    //A-Arrival, D-Departure, B-Board Worker 
+    console.log('set work');
+    ['D','A','B'].forEach(_tp => {
+      //console.log(`#key_dept${_work_tp[_tp]}M`);
+      var dept_select = d3.select('#flt_modal').select(`#key_dept${_tp}M`);
+      set_select(dept_select,dept_codes);
+      var empcd = selected_box.select(`#worker${_tp}`).attr('empcd');
+      var deptcd = emp_to_dept(recordset,empcd);
+      $(`#flt_modal #key_dept${_tp}M`).val(deptcd);
+      var emp_codes = filter_emps(recordset,deptcd)
+      var emp_select = d3.select('#flt_modal').select(`#sel_dept${_tp}M`);
+      set_select(emp_select,emp_codes);
+      $(`#flt_modal #sel_dept${_tp}M`).val(empcd);
+      [1,2,3,4].forEach(_i => {//갯수 만큼 조정
+        //console.log(`#key_dept${_work_tp[_tp]}S${_i}`);
+        dept_select = d3.select('#flt_modal').select(`#key_dept${_tp}S${_i}`);
+        set_select(dept_select,dept_codes);
+        empcd = selected_box.select(`#worker${_tp}`).attr(`sub_empcd${_i}`);
+        deptcd = emp_to_dept(recordset,empcd);
+        //console.log('sub dept : ' + deptcd);
+        $(`#flt_modal #key_dept${_tp}S${_i}`).val(deptcd);
+        emp_codes = filter_emps(recordset,deptcd)
+        emp_select = d3.select('#flt_modal').select(`#sel_dept${_tp}S${_i}`);
+        set_select(emp_select,emp_codes);
+        $(`#flt_modal #sel_dept${_tp}S${_i}`).val(empcd);
+      });
+    });
 
     //LOV 코드
     set_select(d3.select('#flt_modal').select('#main_chk'),check_lov.table().concat([[99,'']]));
@@ -787,6 +780,7 @@ function emp_to_dept(recordset, empcd){
 }
 //부서코드를 이용 해당 작업자 리스트 생성
 function filter_emps(recordset,dept){
+  console.log(dept);
   if(dept != undefined){
     var dept_codes = recordset.filter(e=>{return e.DeptCode == dept})
     .map(e=>{return [e.EmpName,e.EmpCode]}).sort();
@@ -804,4 +798,10 @@ function set_select(select,code_table){
     select.append('option')
       .attr('value',e[0]).text(e[1]);
   })
+}
+
+var click_e = null;
+function chk_fn(e){
+  click_e = e;
+  console.log(click_e)
 }

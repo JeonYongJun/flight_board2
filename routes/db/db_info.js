@@ -13,7 +13,7 @@ module.exports = (function () {
     },
     dev: { // dev server db info
       server: '10.1.21.81',
-      database: 'EJMMS_2018_02_28',
+      database: 'EJMMS_20180419',
       port: '1433',
       user: 'sa',
       password: 'password1!',

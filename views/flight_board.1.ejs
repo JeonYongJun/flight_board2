@@ -94,144 +94,51 @@
 					</div>
 					<table class="table table-bordered">
 						<tr class='active'>
-							<th width="80">구분</th><th>출발지원</th><th>탑승지원</th><th>도착지원</th>
+							<th width="80">정비 지원</th><th>메인</th><th>서브</th>
 						</tr>
 						<tr>
-							<td>메인</td>
+							<td>출발 지원</td>
 							<td>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptDM"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptDM"><option>메인</option></select>
-									</div>
-								</div>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptDM"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptDM"><option>메인</option></select>
+								</div></form>
 							</td>
 							<td>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptBM"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptBM"><option>메인</option></select>
-									</div>
-								</div>
-							</td>
-							<td>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptAM"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptAM"><option>메인</option></select>
-									</div>
-								</div>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptDS"><option>부서</option></select>
+								<select multiple size="3" class="form-control input-sm" id="sel_deptDS"><option>서브</option></select>
+								</div></form>
 							</td>
 						</tr>
 						<tr>
-							<td>서브</td>
+							<td>도착 지원</td>
 							<td>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptDS1"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptDS1"><option>서브1</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptDS2"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptDS2"><option>서브2</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptDS3"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptDS3"><option>서브3</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptDS4"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptDS4"><option>서브4</option></select>
-									</div>
-								</div>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptAM"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptAM"><option>메인</option></select>
+								</div></form>
 							</td>
 							<td>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptBS1"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptBS1"><option>서브1</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptBS2"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptBS2"><option>서브2</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptBS3"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptBS3"><option>서브3</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptBS4"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptBS4"><option>서브4</option></select>
-									</div>
-								</div>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptAS"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptAS"><option>서브</option></select>
+								</div></form>
+							</td>
+						</tr>
+						<tr>
+							<td>탑승 지원</td>
+							<td>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptBM"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptBM"><option>메인</option></select>
+								</div></form>
 							</td>
 							<td>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptAS1"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptAS1"><option>서브1</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptAS2"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptAS2"><option>서브2</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptAS3"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptAS3"><option>서브3</option></select>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-									<select class="form-control input-sm" id="key_deptAS4"><option>부서</option></select>
-									</div>
-									<div class="col-xs-10">
-									<select class="form-control input-sm" id="sel_deptAS4"><option>서브4</option></select>
-									</div>
-								</div>
+								<form class="form-inline"><div class="form-group">
+								<select class="form-control input-sm" id="key_deptBS"><option>부서</option></select>
+								<select class="form-control input-sm" id="sel_deptBS"><option>서브</option></select>
+								</div></form>
 							</td>
 						</tr>
 					</table>
@@ -307,105 +214,42 @@
 <div id="tooltip_div" class="tooltip" style="opacity: 0;"></div>
 <script>
 //event binding
-// ['A','D','B'].forEach(tp => {
-// 	$(`#flt_modal #key_dept${tp}M`).on("change",()=>{
-// 		set_select(d3.select('#flt_modal').select(`#sel_dept${tp}M`),
-// 			filter_emps(recordset,$(`#flt_modal #key_dept${tp}M`).val()));
-// 	})
-// 	[1,2,3,4].forEach(i => {
-// 		$(`#flt_modal #key_dept${tp}S${i}`).on("change",()=>{
-// 			set_select(d3.select('#flt_modal').select(`#sel_dept${tp}S${i}`),
-// 				filter_emps(recordset,$(`#flt_modal #key_dept${tp}S${i}`).val()));
-// 		})
-// 	})
-// })
-
 $('#flt_modal #key_deptDM').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptDM'),
 			filter_emps(recordset,$('#flt_modal #key_deptDM').val()));
 })
-$('#flt_modal #key_deptDS1').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptDS1'),
-			filter_emps(recordset,$('#flt_modal #key_deptDS1').val()));
-})
-$('#flt_modal #key_deptDS2').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptDS2'),
-			filter_emps(recordset,$('#flt_modal #key_deptDS2').val()));
-})
-$('#flt_modal #key_deptDS3').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptDS3'),
-			filter_emps(recordset,$('#flt_modal #key_deptDS3').val()));
-})
-$('#flt_modal #key_deptDS4').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptDS4'),
-			filter_emps(recordset,$('#flt_modal #key_deptDS4').val()));
+$('#flt_modal #key_deptDS').on("change",()=>{
+	set_select(d3.select('#flt_modal').select('#sel_deptDS'),
+			filter_emps(recordset,$('#flt_modal #key_deptDS').val()));
 })
 $('#flt_modal #key_deptAM').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptAM'),
 			filter_emps(recordset,$('#flt_modal #key_deptAM').val()));
 })
-$('#flt_modal #key_deptAS1').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptAS1'),
-			filter_emps(recordset,$('#flt_modal #key_deptAS1').val()));
-})
-$('#flt_modal #key_deptAS2').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptAS2'),
-			filter_emps(recordset,$('#flt_modal #key_deptAS2').val()));
-})
-$('#flt_modal #key_deptAS3').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptAS3'),
-			filter_emps(recordset,$('#flt_modal #key_deptAS3').val()));
-})
-$('#flt_modal #key_deptAS4').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptAS4'),
-			filter_emps(recordset,$('#flt_modal #key_deptAS4').val()));
+$('#flt_modal #key_deptAS').on("change",()=>{
+	set_select(d3.select('#flt_modal').select('#sel_deptAS'),
+			filter_emps(recordset,$('#flt_modal #key_deptAS').val()));
 })
 $('#flt_modal #key_deptBM').on("change",()=>{
 	set_select(d3.select('#flt_modal').select('#sel_deptBM'),
 			filter_emps(recordset,$('#flt_modal #key_deptBM').val()));
 })
-$('#flt_modal #key_deptBS1').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptBS1'),
-			filter_emps(recordset,$('#flt_modal #key_deptBS1').val()));
+$('#flt_modal #key_deptBS').on("change",()=>{
+	set_select(d3.select('#flt_modal').select('#sel_deptBS'),
+			filter_emps(recordset,$('#flt_modal #key_deptBS').val()));
 })
-$('#flt_modal #key_deptBS2').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptBS2'),
-			filter_emps(recordset,$('#flt_modal #key_deptBS2').val()));
-})
-$('#flt_modal #key_deptBS3').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptBS3'),
-			filter_emps(recordset,$('#flt_modal #key_deptBS3').val()));
-})
-$('#flt_modal #key_deptBS4').on("change",()=>{
-	set_select(d3.select('#flt_modal').select('#sel_deptBS4'),
-			filter_emps(recordset,$('#flt_modal #key_deptBS4').val()));
-})
-
 <% if(auth == 'W') { %>
 $('#flt_modal #btn_save').on('click',(e)=>{
 	console.log('btn_save');
 	//console.log(e);
 	// 각 정보를 읽어와 처리
 	// 1. 작업자
-	['A','D','B'].forEach(tp=>{
-
-		selected_box.select(`#worker${tp}`).attr('empcd',$(`#flt_modal #sel_dept${tp}M`).val())
-											.text($(`#flt_modal #sel_dept${tp}M option:selected`).text());
-		[1,2,3,4].forEach(i => {
-			selected_box.select(`#worker${tp}`).attr(`sub_empcd${i}`,$(`#flt_modal #sel_dept${tp}S${i}`).val())
-											.attr(`sub_empnm${i}`,$(`#flt_modal #sel_dept${tp}S${i} option:selected`).text());
-		});
-		
-	})
-	// selected_box.select('#workerA').attr('empcd',$('#flt_modal #sel_deptAM').val()).text($('#flt_modal #sel_deptAM option:selected').text());
-	// selected_box.select('#workerA').attr('sub_empcd1',$('#flt_modal #sel_deptAS1').val()).attr('sub_empnm1',$('#flt_modal #sel_deptAS1 option:selected').text());
-	// selected_box.select('#workerA').attr('sub_empcd2',$('#flt_modal #sel_deptAS2').val()).attr('sub_empnm2',$('#flt_modal #sel_deptAS2 option:selected').text());
-	// selected_box.select('#workerD').attr('empcd',$('#flt_modal #sel_deptDM').val()).text($('#flt_modal #sel_deptDM option:selected').text());
-	// selected_box.select('#workerD').attr('sub_empcd1',$('#flt_modal #sel_deptDS1').val()).attr('sub_empnm1',$('#flt_modal #sel_deptDS1 option:selected').text());
-	// selected_box.select('#workerD').attr('sub_empcd2',$('#flt_modal #sel_deptDS2').val()).attr('sub_empnm2',$('#flt_modal #sel_deptDS2 option:selected').text());
-	// selected_box.select('#workerB').attr('empcd',$('#flt_modal #sel_deptBM').val()).text($('#flt_modal #sel_deptBM option:selected').text());
-	// selected_box.select('#workerB').attr('sub_empcd1',$('#flt_modal #sel_deptBS1').val()).attr('sub_empnm1',$('#flt_modal #sel_deptBS1 option:selected').text());
-	// selected_box.select('#workerB').attr('sub_empcd2',$('#flt_modal #sel_deptBS2').val()).attr('sub_empnm2',$('#flt_modal #sel_deptBS2 option:selected').text());
+	selected_box.select('#workerA').attr('empcd',$('#flt_modal #sel_deptAM').val()).text($('#flt_modal #sel_deptAM option:selected').text());
+	selected_box.select('#workerA').attr('sub_empcd',$('#flt_modal #sel_deptAS').val()).attr('sub_empnm',$('#flt_modal #sel_deptAS option:selected').text());
+	selected_box.select('#workerD').attr('empcd',$('#flt_modal #sel_deptDM').val()).text($('#flt_modal #sel_deptDM option:selected').text());
+	selected_box.select('#workerD').attr('sub_empcd',$('#flt_modal #sel_deptDS').val()).attr('sub_empnm',$('#flt_modal #sel_deptDS option:selected').text());
+	selected_box.select('#workerB').attr('empcd',$('#flt_modal #sel_deptBM').val()).text($('#flt_modal #sel_deptBM option:selected').text());
+	selected_box.select('#workerB').attr('sub_empcd',$('#flt_modal #sel_deptBS').val()).attr('sub_empnm',$('#flt_modal #sel_deptBS option:selected').text());
 	save_workers(selected_box);
 
 	// 2. 주기장(메뉴얼 from to tmp)

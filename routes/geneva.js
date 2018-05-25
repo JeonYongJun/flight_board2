@@ -4,8 +4,9 @@ var JSSoup = require('jssoup').default;
 var router = express.Router();
 
 function sector_to_json(sectors){
-    let tags = ['SectorKey','Rego','FlightNumber','STD','LSTD','ETD','LETD',
-                'ETA','LETA','ATD','LATD','ATA','LATA','Crew'];
+    let tags = ['SectorKey','Rego','FlightNumber','STD','LSTD','STA','LSTA',
+                'ETD','LETD','ETA','LETA','ATD','LATD','ATA','LATA','Crew',
+                'SchedDepPort','SchedArrPort'];
     var jsons = [];
     for(i in sectors){
         var json = {};

@@ -199,6 +199,7 @@ function draw_plot(sel_date,sel_station,draw_data){
       .attr('text-anchor','start')
       .attr("id","RouteFrom").attr("font-size","14")
       .on('mouseover',(d)=>{
+        console.log(d);
         var sel_geneva = filter_geneva(d);
         //console.log(sel_geneva);
         if(sel_geneva!==null){

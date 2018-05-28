@@ -16,6 +16,7 @@
   </style>
 </head>
 <body>
+    <div id="tooltip_div" class="tooltip" style="opacity: 0;"></div>
     <div id="control" v-cloak>
         <input type="date" id="log_date" v-model="log_date" />
         <select id="station" v-model="station">
@@ -32,14 +33,16 @@
             <g class="SECTOR" v-for="sec in schedule">
                 <g class="box" :id="sec.SectorKey" :transform="'translate('+cal_xscale(sec.ETD)+','+(cal_yscale(sec.Rego)+svg_h_unit)+')'" :etd="sec.ETD">
                     <rect :id="sec.Rego + sec.FlightNumber" class="oth" :width="cal_rect(sec.ETD,sec.ETA).width" :height="box_h"></rect>
-                    <text class="text" :x="cal_rect(sec.ETD,sec.ETA).center" y="37.5" text-anchor="middle" id="FlightNumber_542" font-size="28">{{ sec.FlightNumber }}</text>
+                    <text class="text" :x="cal_rect(sec.ETD,sec.ETA).center" y="37.5" text-anchor="middle"
+                            :id="'FlightNumber_'+sec.FlightNumber" font-size="22" :crew="sec.Crew" @mouseover="crew_show" @mouseout="crew_hide">{{ sec.FlightNumber }}</text>
                     <text class="text" x="2" y="50" text-anchor="start" id="SchedDepPort" font-size="14">{{ sec.SchedDepPort }}</text>
                     <text class="text" :x="cal_rect(sec.ETD,sec.ETA).width" y="50" text-anchor="end" id="SchedArrPort" font-size="14">{{ sec.SchedArrPort }}</text>
                     <text class="text" x="2" y="11.75" text-anchor="start" id="ETD" font-size="12">{{ sec.ETD.substr(11,5) }}</text>
                     <text class="text" :x="cal_rect(sec.ETD,sec.ETA).width" y="11.75" text-anchor="end" id="ETA" font-size="12">{{ sec.ETA.substr(11,5) }}</text>
                     <text class="text" x="2" y="22.333333333333332" text-anchor="start" id="STD" font-size="12" fill="darkred">{{ sec.STD.substr(11,5) }}</text>
                     <text class="text" :x="cal_rect(sec.ETD,sec.ETA).width" y="22.333333333333332" text-anchor="end" id="STA" font-size="12" fill="darkred" opacity="0.9">{{ sec.STA.substr(11,5) }}</text>
-                    <text class="worker_text" x="107.80000000000001" y="-6" id="CrewMembers" text-anchor="middle" font-size="12" font-weight="10" captain="" crew=""></text>
+                    <!-- <flight-txt :x="cal_rect(sec.ETD,sec.ETA).center" y="37.5" anchor="middle" id="FlightNumber_542" size="28" :txt="sec.FlightNumber"></flight-txt> -->
+                    <!-- <text class="worker_text" x="107.80000000000001" y="-6" id="CrewMembers" text-anchor="middle" font-size="12" font-weight="10" captain="" crew=""></text> -->
                 </g>
             </g>
         </svg>
@@ -118,6 +121,15 @@
         data.schedule = schedule.reduce((a,b)=>a.concat(b),[])
         init_svg()
     }
+    var crew_info = function(info = ""){
+		var crews = [];
+		var info_arr = info.split('|');
+		for(var i=0; i < info_arr.length; i+=3) {
+			crews.push(`${info_arr[i+2]} - ${info_arr[i]}(${info_arr[i+1]})`);
+		}
+		return crews;
+	}
+
     var init_svg = function(){
         data.xscale_ticks = parseInt(data.xscale_end.substr(0,2)) - parseInt(data.xscale_start.substr(0,2))
         data.svg_h = (data.box_h+data.svg_h_unit)*(data.hl_set.length) + data.pad_top+data.pad_bottom
@@ -165,6 +177,14 @@
                 center: (p2-p1)/2,
                 width: w
             }
+        },
+        crew_show: function(d){
+            //console.log(d)
+            let crew_list = crew_info(d.path[0].attributes.crew.value)
+            bubble_show(d.offsetX-30,d.offsetY+60,show_msg(crew_list.join('<br>')))
+        },
+        crew_hide: function(){
+            bubble_hide()
         }
     }
 
@@ -183,6 +203,31 @@
         created: read_geneva()
     })
 
+    var FlightTxt = {
+        props:{
+            'x': {required:true},
+            'y': {required:true},
+            'anchor': {defalult:'middle'},
+            'id': {required:true},
+            'size': {defalult:12},
+            'fill': {defalult:'black'},
+            'opacity': {defalult:1},
+            'weight': {defalult:10},
+            'txt': {required:true}
+        },
+        methods: {
+            flight_info: function(){
+                console.log(1)
+            }
+        },
+        template:
+            `<text class="text" :x="x" :y="y"
+            :text-anchor="anchor"
+            :id="id" :font-size="size" :font-weight="weight"
+            :fill="fill"
+            :opacity="opacity" @mouseover="flight_info">{{ txt }}</text>`
+    }
+
     var geneva = new Vue({
         el: '#app',
         data: data,
@@ -197,7 +242,10 @@
         watch:{
 
         },
-        methods:methods
+        methods:methods,
+        components:{
+            'flight-txt': FlightTxt
+        }
     })
 </script>
 </html>
